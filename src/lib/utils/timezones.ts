@@ -50,53 +50,57 @@ export function getUserTimezone(): string {
 /**
  * Converts a datetime-local input string (YYYY-MM-DDTHH:mm) to a UTC Date
  * interpreting the local time in the specified timezone.
- * 
+ *
  * For example, if dateTimeString is "2025-11-03T17:00" and timezone is "America/Chicago",
  * this returns a Date representing 2025-11-03 17:00 CST in UTC (which would be 23:00 UTC).
- * 
+ *
  * @param dateTimeString - The datetime string from datetime-local input (e.g., "2025-11-03T17:00")
  * @param timezone - The IANA timezone (e.g., "America/Chicago")
  * @returns A Date object in UTC representing that local time in the specified timezone
  */
-export function parseLocalDateTimeInTimezone(dateTimeString: string, timezone: string): Date {
+export function parseLocalDateTimeInTimezone(
+  dateTimeString: string,
+  timezone: string
+): Date {
   // The trick: append the timezone to create an ISO 8601 string that JavaScript can parse
   // We'll use a temporary approach: create a formatter to determine the offset
-  
+
   // Parse components
-  const [datePart, timePart] = dateTimeString.split('T');
-  const [year, month, day] = datePart.split('-').map(Number);
-  const [hour, minute] = timePart.split(':').map(Number);
-  
+  const [datePart, timePart] = dateTimeString.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
+
   // Create a reference date to determine timezone offset at this date/time
   // We use UTC constructor to avoid any local timezone interpretation
   const refDate = new Date(Date.UTC(year, month - 1, day, hour, minute, 0));
-  
+
   // Format this date in the target timezone to see what "wall clock" time it represents
-  const formatter = new Intl.DateTimeFormat('en-US', {
+  const formatter = new Intl.DateTimeFormat("en-US", {
     timeZone: timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hour12: false,
   });
-  
+
   const parts = formatter.formatToParts(refDate);
-  const getPartValue = (type: string) => parts.find(p => p.type === type)?.value || '0';
-  
-  const tzYear = parseInt(getPartValue('year'));
-  const tzMonth = parseInt(getPartValue('month'));
-  const tzDay = parseInt(getPartValue('day'));
-  const tzHour = parseInt(getPartValue('hour'));
-  const tzMinute = parseInt(getPartValue('minute'));
-  
+  const getPartValue = (type: string) =>
+    parts.find((p) => p.type === type)?.value || "0";
+
+  const tzYear = parseInt(getPartValue("year"));
+  const tzMonth = parseInt(getPartValue("month"));
+  const tzDay = parseInt(getPartValue("day"));
+  const tzHour = parseInt(getPartValue("hour"));
+  const tzMinute = parseInt(getPartValue("minute"));
+
   // Calculate the offset: how many ms difference between UTC interpretation and timezone interpretation
   const utcTime = Date.UTC(year, month - 1, day, hour, minute, 0);
   const tzTime = Date.UTC(tzYear, tzMonth - 1, tzDay, tzHour, tzMinute, 0);
   const offset = tzTime - utcTime;
-  
+
   // Correct the UTC time by subtracting the offset
   return new Date(utcTime - offset);
 }
@@ -104,37 +108,41 @@ export function parseLocalDateTimeInTimezone(dateTimeString: string, timezone: s
 /**
  * Converts a UTC Date to a datetime-local input string (YYYY-MM-DDTHH:mm)
  * displaying the time in the specified timezone.
- * 
+ *
  * For example, if the date is "2025-11-03T23:00:00Z" (UTC) and timezone is "America/Chicago",
  * this returns "2025-11-03T17:00" (5pm CST).
- * 
+ *
  * @param date - The Date object in UTC
  * @param timezone - The IANA timezone (e.g., "America/Chicago")
  * @returns A string in YYYY-MM-DDTHH:mm format for datetime-local inputs
  */
-export function formatDateTimeForInput(date: Date | string, timezone: string): string {
-  const parsed = typeof date === 'string' ? new Date(date) : date;
-  
+export function formatDateTimeForInput(
+  date: Date | string,
+  timezone: string
+): string {
+  const parsed = typeof date === "string" ? new Date(date) : date;
+
   // Use Intl.DateTimeFormat to get the date/time components in the target timezone
-  const formatter = new Intl.DateTimeFormat('en-US', {
+  const formatter = new Intl.DateTimeFormat("en-US", {
     timeZone: timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hour12: false,
   });
-  
+
   const parts = formatter.formatToParts(parsed);
-  const getPartValue = (type: string) => parts.find(p => p.type === type)?.value || '0';
-  
-  const year = getPartValue('year');
-  const month = getPartValue('month');
-  const day = getPartValue('day');
-  const hour = getPartValue('hour');
-  const minute = getPartValue('minute');
-  
+  const getPartValue = (type: string) =>
+    parts.find((p) => p.type === type)?.value || "0";
+
+  const year = getPartValue("year");
+  const month = getPartValue("month");
+  const day = getPartValue("day");
+  const hour = getPartValue("hour");
+  const minute = getPartValue("minute");
+
   return `${year}-${month}-${day}T${hour}:${minute}`;
 }

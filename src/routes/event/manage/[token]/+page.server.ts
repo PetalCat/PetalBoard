@@ -179,7 +179,9 @@ export const actions = {
       data: {
         title,
         date: parseLocalDateTimeInTimezone(date, timezone),
-        endDate: endDate ? parseLocalDateTimeInTimezone(endDate, timezone) : null,
+        endDate: endDate
+          ? parseLocalDateTimeInTimezone(endDate, timezone)
+          : null,
         timezone,
         location: location ?? null,
         description: description ?? null,
