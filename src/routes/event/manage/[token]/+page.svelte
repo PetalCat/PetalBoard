@@ -4,7 +4,7 @@
   import { page } from '$app/stores';
   import { enhance } from '$app/forms';
   import AddressInput from '$lib/components/AddressInput.svelte';
-  import { COMMON_TIMEZONES } from '$lib/utils/timezones';
+  import { COMMON_TIMEZONES, formatDateTimeForInput } from '$lib/utils/timezones';
 
   let { data, form } = $props<{ data: PageData; form: ActionData | null }>();
   
@@ -187,15 +187,8 @@
     }
   }
 
-  const toLocalInput = (value: string | Date) => {
-    const parsed = typeof value === 'string' ? new Date(value) : value;
-    // Format date for datetime-local input (local time, no timezone conversion)
-    const year = parsed.getFullYear();
-    const month = String(parsed.getMonth() + 1).padStart(2, '0');
-    const day = String(parsed.getDate()).padStart(2, '0');
-    const hours = String(parsed.getHours()).padStart(2, '0');
-    const minutes = String(parsed.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  const toLocalInput = (value: string | Date, timezone: string) => {
+    return formatDateTimeForInput(value, timezone);
   };
 </script>
 
@@ -275,12 +268,12 @@
 
       <label class="form-label">
         <span>Event date and time *</span>
-        <input class="input-field" type="datetime-local" name="date" value={toLocalInput(event.date)} required />
+        <input class="input-field" type="datetime-local" name="date" value={toLocalInput(event.date, event.timezone)} required />
       </label>
 
       <label class="form-label">
         <span>End date and time</span>
-        <input class="input-field" type="datetime-local" name="endDate" value={event.endDate ? toLocalInput(event.endDate) : ''} />
+        <input class="input-field" type="datetime-local" name="endDate" value={event.endDate ? toLocalInput(event.endDate, event.timezone) : ''} />
       </label>
 
       <label class="form-label">

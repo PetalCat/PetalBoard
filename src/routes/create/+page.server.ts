@@ -4,6 +4,7 @@ import { fail, redirect } from "@sveltejs/kit";
 
 import prisma from "$lib/server/prisma";
 import { eventSchema } from "$lib/server/validation";
+import { parseLocalDateTimeInTimezone } from "$lib/utils/timezones";
 
 const publicId = customAlphabet("346789ABCDEFGHJKLMNPQRTUVWXY", 8);
 const manageId = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 32);
@@ -54,8 +55,8 @@ export const actions = {
         const event = await prisma.event.create({
           data: {
             title,
-            date: new Date(date),
-            endDate: endDate ? new Date(endDate) : null,
+            date: parseLocalDateTimeInTimezone(date, timezone),
+            endDate: endDate ? parseLocalDateTimeInTimezone(endDate, timezone) : null,
             timezone,
             rsvpLimit: rsvpLimit ?? null,
             location: location ?? null,

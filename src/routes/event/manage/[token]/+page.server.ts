@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import prisma from "$lib/server/prisma";
 import { eventSchema, questionSchema } from "$lib/server/validation";
+import { parseLocalDateTimeInTimezone } from "$lib/utils/timezones";
 
 const questionUpdateSchema = questionSchema.extend({
   questionId: z.string().cuid(),
@@ -177,8 +178,8 @@ export const actions = {
       where: { id: eventId },
       data: {
         title,
-        date: new Date(date),
-        endDate: endDate ? new Date(endDate) : null,
+        date: parseLocalDateTimeInTimezone(date, timezone),
+        endDate: endDate ? parseLocalDateTimeInTimezone(endDate, timezone) : null,
         timezone,
         location: location ?? null,
         description: description ?? null,
