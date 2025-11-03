@@ -56,11 +56,24 @@ try {
 }
 
 Write-Host "Starting container on http://localhost:$Port ..." -ForegroundColor Cyan
-docker run -d `
-  --name $containerName `
-  -p "$Port`:4173" `
-  -v "${dataPath}:/app/data" `
-  $imageName | Out-Null
+
+$envFile = Join-Path (Get-Location) ".env"
+if (Test-Path $envFile) {
+  Write-Host "Loading environment variables from .env file" -ForegroundColor Cyan
+  docker run -d `
+    --name $containerName `
+    -p "$Port`:4173" `
+    -v "${dataPath}:/app/data" `
+    --env-file $envFile `
+    $imageName | Out-Null
+} else {
+  Write-Host "Warning: No .env file found. Starting without environment variables." -ForegroundColor Yellow
+  docker run -d `
+    --name $containerName `
+    -p "$Port`:4173" `
+    -v "${dataPath}:/app/data" `
+    $imageName | Out-Null
+}
 
 Write-Host ""
 Write-Host "PetalBoard is running at http://localhost:$Port" -ForegroundColor Green
