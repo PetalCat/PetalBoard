@@ -189,9 +189,13 @@
 
   const toLocalInput = (value: string | Date) => {
     const parsed = typeof value === 'string' ? new Date(value) : value;
-    const offsetMinutes = parsed.getTimezoneOffset();
-    const local = new Date(parsed.getTime() - offsetMinutes * 60 * 1000);
-    return local.toISOString().slice(0, 16);
+    // Format date for datetime-local input (local time, no timezone conversion)
+    const year = parsed.getFullYear();
+    const month = String(parsed.getMonth() + 1).padStart(2, '0');
+    const day = String(parsed.getDate()).padStart(2, '0');
+    const hours = String(parsed.getHours()).padStart(2, '0');
+    const minutes = String(parsed.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 </script>
 
