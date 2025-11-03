@@ -864,7 +864,7 @@ html.dark .modal {
     min-height: auto !important;
     height: auto !important;
   }
-  
+
   html.dark .modal form,
   html.dark div[role="dialog"] form {
     flex: 1 1 auto !important;
@@ -872,12 +872,12 @@ html.dark .modal {
     overflow-y: auto !important;
     padding: 0.75rem 1rem !important;
   }
-  
+
   html.dark .modal-header {
     flex-shrink: 0 !important;
     padding: 0.75rem 1rem !important;
   }
-  
+
   html.dark .modal-actions {
     flex-shrink: 0 !important;
     margin-top: 1rem !important;
