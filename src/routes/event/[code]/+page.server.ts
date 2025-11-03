@@ -25,6 +25,11 @@ export const load = async ({ params, locals }) => {
       location: true,
       publicCode: true,
       rsvpLimit: true,
+      theme: true,
+      primaryColor: true,
+      secondaryColor: true,
+      backgroundImage: true,
+      emoji: true,
       _count: { select: { rsvps: true } },
       questions: {
         orderBy: { order: "asc" },
@@ -91,6 +96,11 @@ export const load = async ({ params, locals }) => {
       publicCode: event.publicCode,
       rsvpLimit: event.rsvpLimit,
       rsvpCount: event._count.rsvps,
+      theme: event.theme,
+      primaryColor: event.primaryColor,
+      secondaryColor: event.secondaryColor,
+      backgroundImage: event.backgroundImage,
+      emoji: event.emoji,
       questions: event.questions.map((question) => ({
         id: question.id,
         label: question.label,
@@ -139,7 +149,9 @@ function parseSpotifySelection(raw: string | null | undefined): SpotifyTrack[] {
     if (Array.isArray(parsed)) {
       return parsed.filter(
         (item): item is SpotifyTrack =>
-          typeof item === "object" && item !== null && typeof item.uri === "string"
+          typeof item === "object" &&
+          item !== null &&
+          typeof item.uri === "string"
       );
     }
     if (typeof parsed === "object" && parsed !== null && "uri" in parsed) {
@@ -180,7 +192,9 @@ async function getSpotifyAccessTokenForUser(userId: string) {
         data: {
           spotifyAccessToken: accessToken,
           spotifyRefreshToken: refreshToken,
-          spotifyTokenExpiry: new Date(Date.now() + refreshed.expires_in * 1000),
+          spotifyTokenExpiry: new Date(
+            Date.now() + refreshed.expires_in * 1000
+          ),
         },
       });
     } catch (error) {
@@ -382,7 +396,9 @@ export const actions = {
       if (tracks.length > question.songsPerUser) {
         return fail(400, {
           success: false,
-          message: `You can add at most ${question.songsPerUser} song${question.songsPerUser === 1 ? "" : "s"} for "${question.label}".`,
+          message: `You can add at most ${question.songsPerUser} song${
+            question.songsPerUser === 1 ? "" : "s"
+          } for "${question.label}".`,
           values: raw,
         });
       }
@@ -663,7 +679,9 @@ export const actions = {
       if (tracks.length > question.songsPerUser) {
         return fail(400, {
           success: false,
-          message: `You can add at most ${question.songsPerUser} song${question.songsPerUser === 1 ? "" : "s"} for "${question.label}".`,
+          message: `You can add at most ${question.songsPerUser} song${
+            question.songsPerUser === 1 ? "" : "s"
+          } for "${question.label}".`,
           type: "updateRsvp",
         });
       }

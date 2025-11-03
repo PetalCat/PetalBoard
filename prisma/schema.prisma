@@ -42,6 +42,11 @@ model Event {
   publicCode   String     @unique
   manageToken  String     @unique
   spotifyPlaylistId String?
+  theme        String     @default("light") // "light" or "dark"
+  primaryColor String?    // Hex color for primary theme
+  secondaryColor String?  // Hex color for secondary theme
+  backgroundImage String? // URL to background image
+  emoji        String?    // Event emoji/icon
   userId       String
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   questions    Question[]

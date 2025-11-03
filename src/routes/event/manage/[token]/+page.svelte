@@ -272,7 +272,7 @@
     >
       <label class="form-label">
         <span>Event name *</span>
-        <input class="input-field" type="text" name="name" value={event.title} required />
+        <input class="input-field" type="text" name="title" value={event.title} required />
       </label>
 
       <label class="form-label">
@@ -287,20 +287,89 @@
 
       <label class="form-label">
         <span>Location *</span>
-        <AddressInput
-          bind:value={locationValue}
-        />
+        <input class="input-field" type="text" name="location" value={event.location || ''} required />
       </label>
 
       <label class="form-label">
         <span>Total capacity (0 for unlimited)</span>
-        <input class="input-field" type="number" name="capacity" value={event.rsvpLimit || 0} min="0" required />
+        <input class="input-field" type="number" name="rsvpLimit" value={event.rsvpLimit || 0} min="0" required />
       </label>
 
       <label class="form-label">
         <span>Description</span>
         <textarea class="input-field" name="description" rows="4">{event.description || ''}</textarea>
       </label>
+
+      <!-- Event Customization -->
+      <details class="border-2 rounded-2xl overflow-hidden" style="border-color: rgba(124, 93, 250, 0.15);">
+        <summary class="flex items-center gap-2 px-5 py-4 cursor-pointer select-none font-semibold bg-gradient-to-r from-primary-50 to-white hover:from-primary-100 list-none">
+          <span class="text-xl">🎨</span>
+          <span>Customize appearance</span>
+        </summary>
+        <div class="p-5 space-y-5 bg-white">
+          <label class="form-label">
+            <span>Event emoji (appears in title)</span>
+            <input class="input-field text-2xl" type="text" name="emoji" value={event.emoji || ''} maxlength="10" placeholder="🎉" />
+            <small class="text-sm text-gray-600">Optional emoji to show with your event title</small>
+          </label>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="form-label">
+              <span>Primary color</span>
+              <select class="input-field" name="primaryColor">
+                <option value="violet" selected={!event.primaryColor || event.primaryColor === 'violet'}>Violet (Default)</option>
+                <option value="red" selected={event.primaryColor === 'red'}>Red</option>
+                <option value="orange" selected={event.primaryColor === 'orange'}>Orange</option>
+                <option value="amber" selected={event.primaryColor === 'amber'}>Amber</option>
+                <option value="yellow" selected={event.primaryColor === 'yellow'}>Yellow</option>
+                <option value="lime" selected={event.primaryColor === 'lime'}>Lime</option>
+                <option value="green" selected={event.primaryColor === 'green'}>Green</option>
+                <option value="emerald" selected={event.primaryColor === 'emerald'}>Emerald</option>
+                <option value="teal" selected={event.primaryColor === 'teal'}>Teal</option>
+                <option value="cyan" selected={event.primaryColor === 'cyan'}>Cyan</option>
+                <option value="sky" selected={event.primaryColor === 'sky'}>Sky</option>
+                <option value="blue" selected={event.primaryColor === 'blue'}>Blue</option>
+                <option value="indigo" selected={event.primaryColor === 'indigo'}>Indigo</option>
+                <option value="purple" selected={event.primaryColor === 'purple'}>Purple</option>
+                <option value="fuchsia" selected={event.primaryColor === 'fuchsia'}>Fuchsia</option>
+                <option value="pink" selected={event.primaryColor === 'pink'}>Pink</option>
+                <option value="rose" selected={event.primaryColor === 'rose'}>Rose</option>
+              </select>
+              <small class="text-sm text-gray-600">Main accent color</small>
+            </label>
+
+            <label class="form-label">
+              <span>Secondary color</span>
+              <select class="input-field" name="secondaryColor">
+                <option value="pink" selected={!event.secondaryColor || event.secondaryColor === 'pink'}>Pink (Default)</option>
+                <option value="red" selected={event.secondaryColor === 'red'}>Red</option>
+                <option value="orange" selected={event.secondaryColor === 'orange'}>Orange</option>
+                <option value="amber" selected={event.secondaryColor === 'amber'}>Amber</option>
+                <option value="yellow" selected={event.secondaryColor === 'yellow'}>Yellow</option>
+                <option value="lime" selected={event.secondaryColor === 'lime'}>Lime</option>
+                <option value="green" selected={event.secondaryColor === 'green'}>Green</option>
+                <option value="emerald" selected={event.secondaryColor === 'emerald'}>Emerald</option>
+                <option value="teal" selected={event.secondaryColor === 'teal'}>Teal</option>
+                <option value="cyan" selected={event.secondaryColor === 'cyan'}>Cyan</option>
+                <option value="sky" selected={event.secondaryColor === 'sky'}>Sky</option>
+                <option value="blue" selected={event.secondaryColor === 'blue'}>Blue</option>
+                <option value="indigo" selected={event.secondaryColor === 'indigo'}>Indigo</option>
+                <option value="purple" selected={event.secondaryColor === 'purple'}>Purple</option>
+                <option value="fuchsia" selected={event.secondaryColor === 'fuchsia'}>Fuchsia</option>
+                <option value="violet" selected={event.secondaryColor === 'violet'}>Violet</option>
+                <option value="rose" selected={event.secondaryColor === 'rose'}>Rose</option>
+              </select>
+              <small class="text-sm text-gray-600">Secondary accent color</small>
+            </label>
+          </div>
+
+          <label class="form-label">
+            <span>Background image URL</span>
+            <input class="input-field" type="url" name="backgroundImage" value={event.backgroundImage || ''} placeholder="https://example.com/image.jpg" />
+            <small class="text-sm text-gray-600">Optional background image for your event page</small>
+          </label>
+        </div>
+      </details>
 
       <button class="btn-primary" type="submit">Update event</button>
     </form>

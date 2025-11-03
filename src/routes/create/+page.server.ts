@@ -32,8 +32,18 @@ export const actions = {
       });
     }
 
-    const { title, date, endDate, rsvpLimit, location, description } =
-      parsed.data;
+    const {
+      title,
+      date,
+      endDate,
+      rsvpLimit,
+      location,
+      description,
+      primaryColor,
+      secondaryColor,
+      backgroundImage,
+      emoji,
+    } = parsed.data;
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
       const publicCode = publicId();
@@ -48,6 +58,10 @@ export const actions = {
             rsvpLimit: rsvpLimit ?? null,
             location: location ?? null,
             description: description ?? null,
+            primaryColor: primaryColor ?? null,
+            secondaryColor: secondaryColor ?? null,
+            backgroundImage: backgroundImage ?? null,
+            emoji: emoji ?? null,
             publicCode,
             manageToken,
             userId: locals.user.id,

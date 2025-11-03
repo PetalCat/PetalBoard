@@ -36,6 +36,11 @@ export const load = async ({ params, locals }) => {
       location: true,
       rsvpLimit: true,
       publicCode: true,
+      theme: true,
+      primaryColor: true,
+      secondaryColor: true,
+      backgroundImage: true,
+      emoji: true,
       questions: {
         orderBy: { order: "asc" },
         select: {
@@ -99,6 +104,11 @@ export const load = async ({ params, locals }) => {
       location: event.location,
       rsvpLimit: event.rsvpLimit,
       publicCode: event.publicCode,
+      theme: event.theme,
+      primaryColor: event.primaryColor,
+      secondaryColor: event.secondaryColor,
+      backgroundImage: event.backgroundImage,
+      emoji: event.emoji,
       questions: event.questions.map((question) => ({
         id: question.id,
         type: question.type,
@@ -140,9 +150,15 @@ export const actions = {
     const eventId = await getEventId(params.token);
     const formData = await request.formData();
     const raw = Object.fromEntries(formData) as Record<string, string>;
+
+    console.log("Form data received:", raw);
+    console.log("Primary color:", raw.primaryColor);
+    console.log("Secondary color:", raw.secondaryColor);
+
     const parsed = eventSchema.safeParse(raw);
 
     if (!parsed.success) {
+      console.log("Validation errors:", parsed.error.flatten().fieldErrors);
       return fail(400, {
         success: false,
         errors: parsed.error.flatten().fieldErrors,
@@ -151,7 +167,11 @@ export const actions = {
       });
     }
 
-    const { title, date, endDate, location, description } = parsed.data;
+    console.log("Parsed data:", parsed.data);
+    console.log("Parsed primary color:", parsed.data.primaryColor);
+
+    const { title, date, endDate, location, description, rsvpLimit } =
+      parsed.data;
 
     await prisma.event.update({
       where: { id: eventId },
@@ -161,8 +181,15 @@ export const actions = {
         endDate: endDate ? new Date(endDate) : null,
         location: location ?? null,
         description: description ?? null,
+        rsvpLimit: rsvpLimit ?? null,
+        primaryColor: parsed.data.primaryColor ?? null,
+        secondaryColor: parsed.data.secondaryColor ?? null,
+        backgroundImage: parsed.data.backgroundImage ?? null,
+        emoji: parsed.data.emoji ?? null,
       },
     });
+
+    console.log("Event updated successfully");
 
     return {
       success: true,

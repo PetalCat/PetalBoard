@@ -56,6 +56,14 @@ export const eventSchema = z.object({
     }),
   location: optionalText(z.string().max(120)),
   description: optionalText(z.string().max(600)),
+  primaryColor: optionalText(
+    z.string().regex(/^[a-z]+$/, "Invalid color name")
+  ),
+  secondaryColor: optionalText(
+    z.string().regex(/^[a-z]+$/, "Invalid color name")
+  ),
+  backgroundImage: optionalText(z.string().url("Invalid URL")),
+  emoji: optionalText(z.string().max(10)),
 });
 
 export const questionSchema = z.object({
