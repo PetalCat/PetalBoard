@@ -17,7 +17,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY prisma ./prisma
 COPY src ./src
 COPY static ./static
-COPY svelte.config.js tsconfig.json vite.config.ts .
+COPY svelte.config.js tsconfig.json vite.config.ts postcss.config.js tailwind.config.js .
 
 RUN corepack enable pnpm \
   && pnpm exec prisma generate \
