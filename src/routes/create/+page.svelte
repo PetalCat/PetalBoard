@@ -31,8 +31,8 @@
   <p class="bg-red-500/12 rounded-2xl px-4 py-3 text-red-900 max-w-[620px] mb-6">{message}</p>
 {/if}
 
-<form method="POST" class="grid gap-6 bg-white p-6 lg:p-10 rounded-[20px] shadow-card max-w-[620px]">
-  <label class="grid gap-2 font-medium text-dark-800">
+<form method="POST" class="grid gap-6 bg-white p-6 lg:p-10 rounded-[20px] shadow-card w-full max-w-[620px]">
+  <label class="form-label text-dark-800">
     <span>Event title</span>
     <input name="title" required value={values.title ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
     {#if errors.title}
@@ -40,7 +40,7 @@
     {/if}
   </label>
 
-  <label class="grid gap-2 font-medium text-dark-800">
+  <label class="form-label text-dark-800">
     <span>Date &amp; time</span>
     <input type="datetime-local" name="date" required value={values.date ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
     {#if errors.date}
@@ -48,7 +48,7 @@
     {/if}
   </label>
 
-  <label class="grid gap-2 font-medium text-dark-800">
+  <label class="form-label text-dark-800">
     <span>End time (optional)</span>
     <input type="datetime-local" name="endDate" value={values.endDate ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
     {#if errors.endDate}
@@ -56,7 +56,7 @@
     {/if}
   </label>
 
-  <label class="grid gap-2 font-medium text-dark-800">
+  <label class="form-label text-dark-800">
     <span>RSVP Limit (optional)</span>
     <input type="number" name="rsvpLimit" min="1" placeholder="No limit" value={values.rsvpLimit ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
     {#if errors.rsvpLimit}
@@ -64,12 +64,12 @@
     {/if}
   </label>
 
-  <label class="grid gap-2 font-medium text-dark-800">
+  <label class="form-label text-dark-800">
     <span>Location</span>
     <AddressInput bind:value={locationValue} error={errors.location?.[0]} />
   </label>
 
-  <label class="grid gap-2 font-medium text-dark-800">
+  <label class="form-label text-dark-800">
     <span>Description</span>
     <textarea name="description" rows="4" class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 resize-y focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18">{values.description ?? ''}</textarea>
     {#if errors.description}
@@ -90,7 +90,7 @@
 
     {#if showCustomization}
       <div class="grid gap-6 pl-6">
-        <label class="grid gap-2 font-medium text-dark-800">
+        <label class="form-label text-dark-800">
           <span>Event emoji (appears in title)</span>
           <div class="flex flex-wrap gap-2 mb-2">
             {#each emojiList as emoji}
@@ -112,7 +112,7 @@
           {/if}
         </label>
 
-        <label class="grid gap-2 font-medium text-dark-800">
+        <label class="form-label text-dark-800">
           <span>Primary color</span>
           <select name="primaryColor" class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18">
             <option value="violet" selected={!values.primaryColor || values.primaryColor === 'violet'}>Violet (Default)</option>
@@ -138,7 +138,7 @@
           {/if}
         </label>
 
-        <label class="grid gap-2 font-medium text-dark-800">
+        <label class="form-label text-dark-800">
           <span>Secondary color</span>
           <select name="secondaryColor" class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18">
             <option value="pink" selected={!values.secondaryColor || values.secondaryColor === 'pink'}>Pink (Default)</option>
@@ -164,7 +164,7 @@
           {/if}
         </label>
 
-        <label class="grid gap-2 font-medium text-dark-800">
+        <label class="form-label text-dark-800">
           <span>Background image URL (optional)</span>
           <input type="url" name="backgroundImage" placeholder="https://example.com/image.jpg" value={values.backgroundImage ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
           <small class="text-dark-700/60">Use a high-quality image for best results</small>

@@ -9,8 +9,8 @@
 <h1 class="mb-2">Log in</h1>
 <p class="text-dark-900/75 max-w-[60ch] mb-8">Welcome back! Log in to create and manage your events.</p>
 
-<form method="POST" class="grid gap-6 bg-white p-6 lg:p-10 rounded-[20px] shadow-card max-w-[480px]">
-  <label class="grid gap-2 font-medium text-dark-800">
+<form method="POST" class="grid gap-6 bg-white p-6 lg:p-10 rounded-[20px] shadow-card w-full max-w-[480px]">
+  <label class="form-label text-dark-800">
     <span>Email</span>
     <input type="email" name="email" required value={values.email ?? ''} autocomplete="email" class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
     {#if errors.email}
@@ -18,7 +18,7 @@
     {/if}
   </label>
 
-  <label class="grid gap-2 font-medium text-dark-800">
+  <label class="form-label text-dark-800">
     <span>Password</span>
     <input
       type="password"

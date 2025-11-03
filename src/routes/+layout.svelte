@@ -87,7 +87,7 @@
   />
 </svelte:head>
 
-<div class="layout-shell flex flex-col min-h-screen">
+<div class="layout-shell flex flex-col min-h-screen w-full max-w-full overflow-x-hidden box-border">
   <header 
     class="top-nav sticky top-0 z-30 flex items-center justify-between px-4 py-3 lg:px-12 border-b transition-all backdrop-blur-[14px]" 
     class:dark-header={darkMode}
@@ -206,7 +206,7 @@
     </nav>
   </aside>
 
-  <main class="flex-1 w-full max-w-[1100px] mx-auto px-4 pt-6 pb-20 lg:px-12 lg:py-12">{@render children()}</main>
+  <main class="flex-1 w-full max-w-full overflow-x-hidden mx-auto px-4 pt-6 pb-20 lg:px-12 lg:py-12 box-border">{@render children()}</main>
 
   <footer class="text-center py-8 px-4 text-[rgba(46,24,83,0.7)] text-sm">
     <p>Made with ❤️ - Parker</p>

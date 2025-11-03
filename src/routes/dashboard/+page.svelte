@@ -41,7 +41,7 @@
       <a href="/create" class="inline-block px-8 py-4 rounded-full bg-primary-gradient text-white no-underline font-semibold shadow-button hover:-translate-y-0.5 transition-all hover:shadow-2xl">Create Your First Event</a>
     </div>
   {:else}
-    <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,320px),1fr))] gap-6">
       {#each events as event}
         <article class="bg-white rounded-2xl p-6 shadow-[0_4px_12px_rgba(60,35,110,0.08)] transition-all flex flex-col gap-4 border border-primary-700/5 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(60,35,110,0.15)]" class:opacity-70={isPast(event.date)}>
           <div class="flex justify-between items-start gap-2">

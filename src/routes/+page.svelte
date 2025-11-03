@@ -1,4 +1,4 @@
-<section class="grid gap-12 grid-cols-[repeat(auto-fit,minmax(280px,1fr))] items-center">
+<section class="grid gap-12 grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] items-center">
   <div>
     <h1 class="text-[clamp(2.6rem,5vw,3.6rem)] leading-tight mb-6 font-bold bg-gradient-to-br from-dark-800 to-primary-800 bg-clip-text text-transparent">Signup lists your guests will actually love using.</h1>
     <p class="text-lg max-w-[38ch] text-dark-900/80 leading-relaxed">
@@ -22,7 +22,7 @@
   </div>
 </section>
 
-<section class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6 mt-16">
+<section class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] gap-6 mt-16">
   <article class="bg-white rounded-[18px] p-8 shadow-[0_18px_32px_rgba(66,32,121,0.08)] border border-primary-700/5 transition-all hover:shadow-2xl hover:-translate-y-1">
     <h2 class="mt-0 flex items-center gap-2 text-primary-700">
       <span class="text-2xl">🎯</span>
@@ -61,7 +61,7 @@
   </article>
 </section>
 
-<section class="mt-20 grid gap-8 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center">
+<section class="mt-20 grid gap-8 grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] items-center">
   <div>
     <h2 class="text-3xl font-bold mb-4 text-dark-800">How it works</h2>
     <ol class="pl-5 grid gap-3 text-dark-700 text-lg">
