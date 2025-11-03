@@ -60,6 +60,10 @@
   const event = data.event;
   const rsvps = data.rsvps;
 
+  // Make questions and rsvps reactive so we can update them
+  let questions = $state(data.event.questions);
+  let rsvpsList = $state(data.rsvps);
+
   let locationValue = $state(event.location ?? '');
   let questionType = $state<string>('text');
   let optionsText = $state<string>('');
@@ -68,6 +72,9 @@
   let playlists = $state<Array<{ id: string; name: string; tracks: { total: number } }>>([]);
   let loadingPlaylists = $state(false);
   let selectedPlaylistId = $state<string>('');
+  let deletingQuestionId = $state<string | null>(null);
+  let deletingRsvpId = $state<string | null>(null);
+  let showDeleteEventConfirm = $state(false);
   
   // Update location value when form values change
   $effect(() => {
@@ -86,7 +93,7 @@
   // Ensure playlists are available when editing existing Spotify questions
   $effect(() => {
     if (!data.hasSpotifyConnected || playlists.length > 0) return;
-    if (event.questions.some((question) => question.type === 'spotify_playlist')) {
+    if (questions.some((question) => question.type === 'spotify_playlist')) {
       fetchPlaylists();
     }
   });
@@ -307,11 +314,11 @@
       </button>
     </div>
 
-    {#if event.questions.length === 0}
+    {#if questions.length === 0}
       <p class="text-center text-gray-500 py-12">No questions yet. Add your first question to start collecting information from attendees.</p>
     {:else}
       <div class="space-y-4">
-        {#each event.questions as question}
+        {#each questions as question}
           {#key question.id}
             <article class="bg-white border border-primary-700/10 rounded-xl p-6 shadow-sm">
               <header class="flex justify-between items-start mb-4 pb-4 border-b border-gray-200">
@@ -336,18 +343,26 @@
                 <form
                   method="POST"
                   action="?/deleteQuestion"
-                  onsubmit={(event) => {
-                    if (!confirm('Delete this question? This action cannot be undone.')) {
-                      event.preventDefault();
-                    }
-                  }}
                   use:enhance={() => {
-                  return async ({ update }) => {
-                    await update();
-                  };
-                }}>
+                    const questionId = question.id;
+                    deletingQuestionId = questionId;
+                    return async ({ result }) => {
+                      if (result.type === 'success') {
+                        // Remove question from local state
+                        questions = questions.filter(q => q.id !== questionId);
+                      }
+                      deletingQuestionId = null;
+                    };
+                  }}
+                >
                   <input type="hidden" name="questionId" value={question.id} />
-                  <button type="submit" class="btn-secondary">Delete</button>
+                  <button 
+                    type="submit" 
+                    class="btn-secondary"
+                    disabled={deletingQuestionId === question.id}
+                  >
+                    {deletingQuestionId === question.id ? 'Deleting...' : 'Delete'}
+                  </button>
                 </form>
               </header>
 
@@ -471,11 +486,11 @@
     <h2 class="text-2xl font-bold text-dark-800 flex items-center gap-2">
       <span class="text-3xl">✅</span>
       RSVPs
-      <span class="text-lg font-normal text-gray-500">({rsvps.length})</span>
+      <span class="text-lg font-normal text-gray-500">({rsvpsList.length})</span>
     </h2>
   </div>
 
-  {#if rsvps.length === 0}
+  {#if rsvpsList.length === 0}
     <div class="text-center py-16 px-8 bg-gradient-to-br from-white to-primary-50 rounded-[24px] shadow-xl max-w-[500px] mx-auto border border-primary-700/10">
       <div class="text-6xl mb-4">📋</div>
       <h3 class="text-dark-800 mb-2 font-bold text-xl">No RSVPs yet</h3>
@@ -488,7 +503,7 @@
         <div class="flex items-center gap-3">
           <span class="text-3xl">✓</span>
           <div>
-            <div class="text-2xl font-bold text-green-700">{rsvps.filter(r => r.status === 'attending').length}</div>
+            <div class="text-2xl font-bold text-green-700">{rsvpsList.filter(r => r.status === 'attending').length}</div>
             <div class="text-sm text-green-700/80 font-medium">Attending</div>
           </div>
         </div>
@@ -497,7 +512,7 @@
         <div class="flex items-center gap-3">
           <span class="text-3xl">?</span>
           <div>
-            <div class="text-2xl font-bold text-yellow-700">{rsvps.filter(r => r.status === 'maybe').length}</div>
+            <div class="text-2xl font-bold text-yellow-700">{rsvpsList.filter(r => r.status === 'maybe').length}</div>
             <div class="text-sm text-yellow-700/80 font-medium">Maybe</div>
           </div>
         </div>
@@ -506,7 +521,7 @@
         <div class="flex items-center gap-3">
           <span class="text-3xl">✗</span>
           <div>
-            <div class="text-2xl font-bold text-gray-700">{rsvps.filter(r => r.status === 'not_attending').length}</div>
+            <div class="text-2xl font-bold text-gray-700">{rsvpsList.filter(r => r.status === 'not_attending').length}</div>
             <div class="text-sm text-gray-700/80 font-medium">Not Attending</div>
           </div>
         </div>
@@ -515,7 +530,7 @@
 
     <!-- RSVP Cards -->
     <div class="space-y-4">
-      {#each rsvps as rsvp}
+      {#each rsvpsList as rsvp}
         <article class="bg-white rounded-xl p-6 shadow-[0_2px_8px_rgba(60,35,110,0.08)] border border-primary-700/5 hover:shadow-[0_4px_12px_rgba(60,35,110,0.12)] transition-all">
           <div class="flex flex-col md:flex-row md:items-start gap-4">
             <!-- Main Info -->
@@ -617,16 +632,25 @@
               {/if}
             </div>
 
-            <!-- Actions -->
             <div class="md:ml-auto">
               <form method="POST" action="?/deleteRsvp" use:enhance={() => {
-                return async ({ update }) => {
-                  await update();
+                const rsvpId = rsvp.id;
+                deletingRsvpId = rsvpId;
+                return async ({ result }) => {
+                  if (result.type === 'success') {
+                    // Remove RSVP from local state
+                    rsvpsList = rsvpsList.filter(r => r.id !== rsvpId);
+                  }
+                  deletingRsvpId = null;
                 };
               }}>
                 <input type="hidden" name="rsvpId" value={rsvp.id} />
-                <button type="submit" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 hover:border-red-300">
-                  🗑️ Remove
+                <button 
+                  type="submit" 
+                  class="px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 hover:border-red-300 disabled:opacity-50"
+                  disabled={deletingRsvpId === rsvp.id}
+                >
+                  {deletingRsvpId === rsvp.id ? '🗑️ Removing...' : '🗑️ Remove'}
                 </button>
               </form>
             </div>
@@ -645,17 +669,20 @@
       <h3 class="text-lg font-semibold text-dark-800 mb-2">Delete this event</h3>
       <p class="text-sm text-gray-600">This will permanently delete the event, all slots, and all signups. This action cannot be undone.</p>
     </div>
-    <form method="POST" action="?/deleteEvent" use:enhance={() => {
-      return async ({ update }) => {
-        await update();
-      };
-    }} onsubmit={(e) => {
-      if (!confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
-        e.preventDefault();
-      }
-    }}>
-      <button type="submit" class="btn-danger whitespace-nowrap">Delete Event</button>
-    </form>
+    {#if showDeleteEventConfirm}
+      <div class="flex gap-2">
+        <form method="POST" action="?/deleteEvent" use:enhance={() => {
+          return async ({ update }) => {
+            await update();
+          };
+        }}>
+          <button type="submit" class="btn-danger whitespace-nowrap">Yes, Delete</button>
+        </form>
+        <button type="button" class="btn-secondary whitespace-nowrap" onclick={() => showDeleteEventConfirm = false}>Cancel</button>
+      </div>
+    {:else}
+      <button type="button" class="btn-danger whitespace-nowrap" onclick={() => showDeleteEventConfirm = true}>Delete Event</button>
+    {/if}
   </div>
 </section>
 
@@ -679,13 +706,16 @@
         class="space-y-5 px-8 py-6"
         use:enhance={() => {
           return async ({ result, update }) => {
-            if (result.type === 'success') {
+            await update();
+            if (result.type === 'success' && result.data) {
+              // Add the new question to the local state
+              const newQuestion = (result.data as any).question;
+              if (newQuestion) {
+                questions = [...questions, newQuestion];
+              }
               questionType = 'text';
               optionsText = '';
               showAddQuestionModal = false;
-              await update({ reset: true });
-            } else {
-              await update({ reset: false });
             }
           };
         }}

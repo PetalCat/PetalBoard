@@ -46,7 +46,7 @@ export const eventSchema = z.object({
     .string()
     .optional()
     .transform((value) => {
-      if (!value || value.trim() === "") return undefined;
+      if (!value || value.trim() === "" || value.trim() === "0") return undefined;
       const num = Number.parseInt(value.trim(), 10);
       return Number.isNaN(num) ? undefined : num;
     })
@@ -92,7 +92,7 @@ export const questionSchema = z.object({
     .string()
     .optional()
     .transform((value) => {
-      if (!value || value.trim() === "") return undefined;
+      if (!value || value.trim() === "" || value.trim() === "0") return undefined;
       const num = Number.parseInt(value.trim(), 10);
       return Number.isNaN(num) ? undefined : num;
     })

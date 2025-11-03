@@ -202,7 +202,7 @@ export const actions = {
       select: { order: true },
     });
 
-    await prisma.question.create({
+    const question = await prisma.question.create({
       data: {
         type,
         label,
@@ -216,11 +216,29 @@ export const actions = {
         order: (maxOrder?.order ?? -1) + 1,
         eventId,
       },
+      select: {
+        id: true,
+        type: true,
+        label: true,
+        description: true,
+        required: true,
+        options: true,
+        quantity: true,
+        isPublic: true,
+        spotifyPlaylistId: true,
+        songsPerUser: true,
+        order: true,
+        _count: { select: { responses: true } },
+      },
     });
 
     return {
       success: true,
       type: "addQuestion",
+      question: {
+        ...question,
+        responseCount: question._count.responses,
+      },
     } as const;
   },
   updateQuestion: async ({ params, request }) => {

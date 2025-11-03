@@ -38,6 +38,7 @@
   let pinError = $state<string>('');
   let editingStatus = $state<string>('attending');
   let newRsvpStatus = $state<string>('attending');
+  let showCancelConfirm = $state(false);
   
   // Collapsible sections state
   let showAttending = $state(true);
@@ -970,6 +971,8 @@
                       value={responses[question.id] ?? ''}
                       eventCode={event.publicCode}
                       limit={question.songsPerUser ?? null}
+                      playlistId={question.spotifyPlaylistId}
+                      questionId={question.id}
                     />
                   </div>
                 {/if}
@@ -986,6 +989,7 @@
 
       <form method="POST" action="?/cancelRsvp" class="cancel-form" use:enhance={() => {
         return async ({ result, update }) => {
+          showCancelConfirm = false;
           if (result.type === 'success' && result.data?.success) {
             // Update reactive state
             rsvpCount = result.data.rsvpCount ?? rsvpCount - 1;
@@ -1003,17 +1007,14 @@
       }}>
         <input type="hidden" name="rsvpId" value={editingRsvp.id} />
         <input type="hidden" name="pin" value={currentPin} />
-        <button
-          type="submit"
-          class="btn-danger"
-          onclick={(e) => {
-            if (!confirm('Are you sure you want to cancel your RSVP?')) {
-              e.preventDefault();
-            }
-          }}
-        >
-          Cancel RSVP
-        </button>
+        {#if showCancelConfirm}
+          <div class="flex gap-2 justify-center">
+            <button type="submit" class="btn-danger">Yes, Cancel RSVP</button>
+            <button type="button" class="btn-secondary" onclick={() => showCancelConfirm = false}>Nevermind</button>
+          </div>
+        {:else}
+          <button type="button" class="btn-danger" onclick={() => showCancelConfirm = true}>Cancel RSVP</button>
+        {/if}
       </form>
     </div>
   </div>
@@ -1288,6 +1289,8 @@
                       value={responses[question.id] ?? ''}
                       eventCode={event.publicCode}
                       limit={question.songsPerUser ?? null}
+                      playlistId={question.spotifyPlaylistId}
+                      questionId={question.id}
                     />
                   </div>
                 {/if}

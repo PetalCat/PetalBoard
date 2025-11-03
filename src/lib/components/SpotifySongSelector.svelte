@@ -7,14 +7,17 @@
     required?: boolean;
     eventCode?: string; // Optional: for guest RSVP, uses host's token
     limit?: number | null;
+    playlistId?: string | null; // Spotify playlist ID for removing tracks
+    questionId?: string; // Question ID for tracking
   }
 
-  let { value = '', name, required = false, eventCode, limit = null }: Props = $props();
+  let { value = '', name, required = false, eventCode, limit = null, playlistId = null, questionId }: Props = $props();
 
   let searchQuery = $state('');
   let searchResults = $state<SpotifyTrack[]>([]);
   let isSearching = $state(false);
   let selectedTracks = $state<SpotifyTrack[]>([]);
+  let initialTracks = $state<Set<string>>(new Set()); // Track IDs that were there initially
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
   let showResults = $state(false);
   let lastValue = $state<string | null>(null);
@@ -24,6 +27,7 @@
   function parseValue(raw: string | null | undefined) {
     if (!raw) {
       selectedTracks = [];
+      initialTracks = new Set();
       return;
     }
 
@@ -31,8 +35,11 @@
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         selectedTracks = parsed;
+        // Store initial track IDs
+        initialTracks = new Set(parsed.map((t: SpotifyTrack) => t.id));
       } else if (parsed && typeof parsed === 'object') {
         selectedTracks = [parsed as SpotifyTrack];
+        initialTracks = new Set([parsed.id]);
       }
     } catch (error) {
       console.warn('Failed to parse Spotify selection', error);
@@ -100,7 +107,34 @@
   }
 
   function removeTrack(trackId: string) {
+    const track = selectedTracks.find(t => t.id === trackId);
     selectedTracks = selectedTracks.filter((track) => track.id !== trackId);
+    
+    // Only remove from Spotify if it was added in this session (not there initially)
+    if (playlistId && track?.uri && questionId && !initialTracks.has(trackId)) {
+      removeTrackFromSpotify(track.uri);
+    }
+  }
+
+  async function removeTrackFromSpotify(trackUri: string) {
+    try {
+      const response = await fetch('/api/spotify/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          playlistId,
+          trackUri,
+          questionId,
+          eventCode
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Failed to remove track from Spotify playlist');
+      }
+    } catch (error) {
+      console.error('Error removing track from Spotify:', error);
+    }
   }
 
   function handleInputChange(event: Event) {

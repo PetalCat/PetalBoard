@@ -194,6 +194,34 @@ export async function addTracksToPlaylist(
   }
 }
 
+export async function removeTracksFromPlaylist(
+  playlistId: string,
+  trackUris: string[],
+  accessToken: string
+): Promise<void> {
+  if (trackUris.length === 0) {
+    return;
+  }
+
+  const response = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tracks: trackUris.map((uri) => ({ uri })),
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to remove tracks from playlist");
+  }
+}
+
 export async function replacePlaylistTracks(
   playlistId: string,
   trackUris: string[],

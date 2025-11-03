@@ -110,6 +110,6 @@
   <main class="flex-1 w-full max-w-[1100px] mx-auto px-4 pt-6 pb-20 lg:px-12 lg:py-12">{@render children()}</main>
 
   <footer class="text-center py-8 px-4 text-[rgba(46,24,83,0.7)] text-sm">
-    <p>Made with love - Parker</p>
+    <p>Made with ❤️ - Parker</p>
   </footer>
 </div>
