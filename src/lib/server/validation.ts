@@ -56,6 +56,7 @@ export const eventSchema = z.object({
     }),
   location: optionalText(z.string().max(120)),
   description: optionalText(z.string().max(5000)),
+  timezone: z.string().min(1, "Timezone is required"),
   primaryColor: optionalText(
     z.string().regex(/^[a-z]+$/, "Invalid color name")
   ),

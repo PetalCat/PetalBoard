@@ -4,6 +4,7 @@
   import { page } from '$app/stores';
   import { enhance } from '$app/forms';
   import AddressInput from '$lib/components/AddressInput.svelte';
+  import { COMMON_TIMEZONES } from '$lib/utils/timezones';
 
   let { data, form } = $props<{ data: PageData; form: ActionData | null }>();
   
@@ -197,16 +198,8 @@
 <header class="flex justify-between gap-8 items-start mb-10">
   <div>
     <h1 class="text-3xl font-bold text-dark-800 mb-2">{event.title}</h1>
-    <p class="text-gray-600 text-sm">{formatDate(event.date)}</p>
-    {#if event.location}
-      <p class="text-gray-600 text-sm">📍 {event.location}</p>
-    {/if}
+    <p class="text-gray-600 text-sm">{formatDate(event.date, event.timezone)}</p>
   </div>
-  <div class="bg-white rounded-2xl px-6 py-4 border border-primary-700/10 shadow-lg">
-    <p class="text-xs uppercase tracking-wider text-gray-500 mb-2 font-semibold">Public link</p>
-    <a href={`/event/${event.publicCode}`} class="text-primary-600 hover:text-primary-700 font-medium transition-colors">/event/{event.publicCode}</a>
-  </div>
-</header>
 
 {#if isNewlyCreated}
   <div class="bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-2xl p-8 mb-6 shadow-2xl">
@@ -277,12 +270,22 @@
 
       <label class="form-label">
         <span>Event date and time *</span>
-        <input class="input-field" type="datetime-local" name="date" value={event.date.toISOString().slice(0, 16)} required />
+        <input class="input-field" type="datetime-local" name="date" value={toLocalInput(event.date)} required />
       </label>
 
       <label class="form-label">
         <span>End date and time</span>
-        <input class="input-field" type="datetime-local" name="endDate" value={event.endDate ? event.endDate.toISOString().slice(0, 16) : ''} />
+        <input class="input-field" type="datetime-local" name="endDate" value={event.endDate ? toLocalInput(event.endDate) : ''} />
+      </label>
+
+      <label class="form-label">
+        <span>Timezone *</span>
+        <select class="input-field" name="timezone" required>
+          {#each COMMON_TIMEZONES as tz}
+            <option value={tz.value} selected={event.timezone === tz.value}>{tz.label}</option>
+          {/each}
+        </select>
+        <small>The timezone for your event. All times will be shown in this timezone.</small>
       </label>
 
       <label class="form-label">

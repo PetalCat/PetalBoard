@@ -12,7 +12,8 @@
       day: 'numeric',
       year: 'numeric',
       hour: 'numeric',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
     }).format(date);
   }
 

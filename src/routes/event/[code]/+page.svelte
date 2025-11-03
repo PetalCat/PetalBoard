@@ -1019,9 +1019,9 @@ const backgroundOverlayDark = event.backgroundImage
           {event.title}
         </h1>
         <div class="flex flex-col gap-2 mb-4">
-          <p class="text-dark-700 m-0 text-sm md:text-base">📅 {formatDate(event.date)}</p>
+          <p class="text-dark-700 m-0 text-sm md:text-base">📅 {formatDate(event.date, event.timezone)}</p>
           {#if event.endDate}
-            <p class="text-dark-700 m-0 text-sm md:text-base">⏰ Until {formatShortDate(event.endDate)}</p>
+            <p class="text-dark-700 m-0 text-sm md:text-base">⏰ Until {formatShortDate(event.endDate, event.timezone)}</p>
           {/if}
           {#if event.location}
             <div class="flex flex-col gap-3">

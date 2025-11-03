@@ -37,6 +37,7 @@ model Event {
   description  String?
   date         DateTime
   endDate      DateTime?
+  timezone     String     @default("America/New_York") // IANA timezone identifier
   location     String?
   rsvpLimit    Int?
   publicCode   String     @unique

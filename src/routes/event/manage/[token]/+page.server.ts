@@ -170,7 +170,7 @@ export const actions = {
     console.log("Parsed data:", parsed.data);
     console.log("Parsed primary color:", parsed.data.primaryColor);
 
-    const { title, date, endDate, location, description, rsvpLimit } =
+    const { title, date, endDate, timezone, location, description, rsvpLimit } =
       parsed.data;
 
     await prisma.event.update({
@@ -179,6 +179,7 @@ export const actions = {
         title,
         date: new Date(date),
         endDate: endDate ? new Date(endDate) : null,
+        timezone,
         location: location ?? null,
         description: description ?? null,
         rsvpLimit: rsvpLimit ?? null,

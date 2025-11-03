@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ActionData } from './$types';
   import AddressInput from '$lib/components/AddressInput.svelte';
+  import { COMMON_TIMEZONES, getUserTimezone } from '$lib/utils/timezones';
 
   const { form } = $props<{ form: ActionData | null }>();
   const errors = $derived<Record<string, string[]>>((form?.errors ?? {}) as Record<string, string[]>);
@@ -9,6 +10,9 @@
 
   let locationValue = $state('');
   let showCustomization = $state(false);
+  
+  // Get user's current timezone as default
+  const defaultTimezone = getUserTimezone();
   
   // Emoji list - common event emojis
   const emojiList = ['🎉', '🎂', '🎊', '🎈', '🎁', '🥳', '🍰', '🎪', '🎭', '🎨', '🎵', '🎸', '🎤', '🏆', '⚽', '🏀', '🎓', '💒', '👶', '🎄', '🎃', '❤️', '🌟', '✨', '🔥', '💐', '🌸', '🌺', '🌻', '🌹'];
@@ -53,6 +57,19 @@
     <input type="datetime-local" name="endDate" value={values.endDate ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
     {#if errors.endDate}
       <small class="text-red-600">{errors.endDate[0]}</small>
+    {/if}
+  </label>
+
+  <label class="form-label text-dark-800">
+    <span>Timezone</span>
+    <select name="timezone" required value={values.timezone ?? defaultTimezone} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18">
+      {#each COMMON_TIMEZONES as tz}
+        <option value={tz.value}>{tz.label}</option>
+      {/each}
+    </select>
+    <small class="text-sm text-gray-600">The timezone for your event. Guests will see times in this timezone.</small>
+    {#if errors.timezone}
+      <small class="text-red-600">{errors.timezone[0]}</small>
     {/if}
   </label>
 
