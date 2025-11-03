@@ -1,15 +1,25 @@
-import { Prisma } from '@prisma/client';
-import { customAlphabet } from 'nanoid';
-import { fail } from '@sveltejs/kit';
+import { Prisma } from "@prisma/client";
+import { customAlphabet } from "nanoid";
+import { fail, redirect } from "@sveltejs/kit";
 
-import prisma from '$lib/server/prisma';
-import { eventSchema } from '$lib/server/validation';
+import prisma from "$lib/server/prisma";
+import { eventSchema } from "$lib/server/validation";
 
-const publicId = customAlphabet('346789ABCDEFGHJKLMNPQRTUVWXY', 8);
-const manageId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 32);
+const publicId = customAlphabet("346789ABCDEFGHJKLMNPQRTUVWXY", 8);
+const manageId = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 32);
+
+export const load = async ({ locals }) => {
+  if (!locals.user) {
+    throw redirect(303, "/login");
+  }
+};
 
 export const actions = {
-  default: async ({ request, url }) => {
+  default: async ({ request, url, locals }) => {
+    if (!locals.user) {
+      throw redirect(303, "/login");
+    }
+
     const formData = await request.formData();
     const raw = Object.fromEntries(formData) as Record<string, string>;
     const parsed = eventSchema.safeParse(raw);
@@ -18,11 +28,12 @@ export const actions = {
       return fail(400, {
         success: false,
         errors: parsed.error.flatten().fieldErrors,
-        values: raw
+        values: raw,
       });
     }
 
-    const { title, date, location, description } = parsed.data;
+    const { title, date, endDate, rsvpLimit, location, description } =
+      parsed.data;
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
       const publicCode = publicId();
@@ -33,41 +44,37 @@ export const actions = {
           data: {
             title,
             date: new Date(date),
+            endDate: endDate ? new Date(endDate) : null,
+            rsvpLimit: rsvpLimit ?? null,
             location: location ?? null,
             description: description ?? null,
             publicCode,
-            manageToken
-          }
+            manageToken,
+            userId: locals.user.id,
+          },
         });
 
-        return {
-          success: true,
-          event: {
-            title: event.title,
-            manageUrl: `${url.origin}/event/manage/${event.manageToken}`,
-            publicUrl: `${url.origin}/event/${event.publicCode}`,
-            manageToken: event.manageToken,
-            publicCode: event.publicCode
-          }
-        } satisfies { success: true; event: Record<string, string> };
+        // Successfully created, redirect to the management page
+        throw redirect(303, `/event/manage/${event.manageToken}?new`);
       } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        // Prisma duplicate key error - try again with a new code
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2002"
+        ) {
           continue;
         }
 
-        console.error('Failed to create event', error);
-        return fail(500, {
-          success: false,
-          message: 'Unable to create event. Please try again.',
-          values: raw
-        });
+        // Not a Prisma error - re-throw (this includes redirects)
+        throw error;
       }
     }
 
+    // Failed after all attempts
     return fail(500, {
       success: false,
-      message: 'Unable to create event. Please try again.',
-      values: raw
+      message: "Unable to create event. Please try again.",
+      values: raw,
     });
-  }
+  },
 };

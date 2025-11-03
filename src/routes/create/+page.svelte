@@ -1,182 +1,77 @@
 <script lang="ts">
   import type { ActionData } from './$types';
+  import AddressInput from '$lib/components/AddressInput.svelte';
 
   const { form } = $props<{ form: ActionData | null }>();
   const errors = $derived<Record<string, string[]>>((form?.errors ?? {}) as Record<string, string[]>);
   const values = $derived<Record<string, string>>((form?.values ?? {}) as Record<string, string>);
   const message = $derived<string | null>(form?.message ?? null);
-  const createdEvent = $derived(form?.success ? form.event : null);
+
+  let locationValue = $state('');
+  
+  // Update location value when form values change
+  $effect(() => {
+    if (values.location) {
+      locationValue = values.location;
+    }
+  });
 </script>
 
-<h1>Create an event</h1>
-<p class="lead">
+<h1 class="mb-2">Create an event</h1>
+<p class="text-dark-900/75 max-w-[60ch] mb-8">
   Set up your potluck or house event, then share the public link with your guests. You can always
   come back to update slots or details from the manage link.
 </p>
 
-{#if createdEvent}
-  <section class="success">
-    <h2>{createdEvent.title} is ready!</h2>
-    <p class="hint">Save these links—they won't be shown again.</p>
-    <div class="links">
-      <div>
-        <p class="label">Public link</p>
-        <a href={createdEvent.publicUrl}>{createdEvent.publicUrl}</a>
-      </div>
-      <div>
-        <p class="label">Manage link</p>
-        <a href={createdEvent.manageUrl}>{createdEvent.manageUrl}</a>
-      </div>
-    </div>
-  </section>
-{/if}
-
 {#if message}
-  <p class="error-banner">{message}</p>
+  <p class="bg-red-500/12 rounded-2xl px-4 py-3 text-red-900 max-w-[620px] mb-6">{message}</p>
 {/if}
 
-<form method="POST" class="form-card">
-  <label>
+<form method="POST" class="grid gap-6 bg-white p-6 lg:p-10 rounded-[20px] shadow-card max-w-[620px]">
+  <label class="grid gap-2 font-medium text-dark-800">
     <span>Event title</span>
-    <input name="title" required value={values.title ?? ''} />
+    <input name="title" required value={values.title ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
     {#if errors.title}
-      <small>{errors.title[0]}</small>
+      <small class="text-red-600">{errors.title[0]}</small>
     {/if}
   </label>
 
-  <label>
+  <label class="grid gap-2 font-medium text-dark-800">
     <span>Date &amp; time</span>
-    <input type="datetime-local" name="date" required value={values.date ?? ''} />
+    <input type="datetime-local" name="date" required value={values.date ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
     {#if errors.date}
-      <small>{errors.date[0]}</small>
+      <small class="text-red-600">{errors.date[0]}</small>
     {/if}
   </label>
 
-  <label>
+  <label class="grid gap-2 font-medium text-dark-800">
+    <span>End time (optional)</span>
+    <input type="datetime-local" name="endDate" value={values.endDate ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
+    {#if errors.endDate}
+      <small class="text-red-600">{errors.endDate[0]}</small>
+    {/if}
+  </label>
+
+  <label class="grid gap-2 font-medium text-dark-800">
+    <span>RSVP Limit (optional)</span>
+    <input type="number" name="rsvpLimit" min="1" placeholder="No limit" value={values.rsvpLimit ?? ''} class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" />
+    {#if errors.rsvpLimit}
+      <small class="text-red-600">{errors.rsvpLimit[0]}</small>
+    {/if}
+  </label>
+
+  <label class="grid gap-2 font-medium text-dark-800">
     <span>Location</span>
-    <input
-      name="location"
-      placeholder="123 Market Street, or &quot;Online&quot;"
-      value={values.location ?? ''}
-    />
-    {#if errors.location}
-      <small>{errors.location[0]}</small>
-    {/if}
+    <AddressInput bind:value={locationValue} error={errors.location?.[0]} />
   </label>
 
-  <label>
+  <label class="grid gap-2 font-medium text-dark-800">
     <span>Description</span>
-    <textarea name="description" rows="4">{values.description ?? ''}</textarea>
+    <textarea name="description" rows="4" class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 resize-y focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18">{values.description ?? ''}</textarea>
     {#if errors.description}
-      <small>{errors.description[0]}</small>
+      <small class="text-red-600">{errors.description[0]}</small>
     {/if}
   </label>
 
-  <button type="submit">Create event</button>
+  <button type="submit" class="justify-self-start px-7 py-3.5 rounded-full border-none bg-primary-gradient text-white font-semibold cursor-pointer shadow-button hover:-translate-y-px">Create event</button>
 </form>
-
-<style>
-  h1 {
-    margin-bottom: 0.5rem;
-  }
-
-  .lead {
-    color: rgba(42, 23, 72, 0.75);
-    max-width: 60ch;
-    margin-bottom: 2rem;
-  }
-
-  .form-card {
-    display: grid;
-    gap: 1.5rem;
-    background: white;
-    padding: clamp(1.5rem, 4vw, 2.5rem);
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(60, 35, 110, 0.08);
-    max-width: 620px;
-  }
-
-  label {
-    display: grid;
-    gap: 0.5rem;
-    font-weight: 500;
-    color: #40246b;
-  }
-
-  input,
-  textarea {
-    border-radius: 12px;
-    border: 1px solid rgba(123, 95, 250, 0.25);
-    padding: 0.75rem 1rem;
-    font: inherit;
-    background: rgba(255, 255, 255, 0.9);
-  }
-
-  textarea {
-    resize: vertical;
-  }
-
-  input:focus,
-  textarea:focus {
-    outline: none;
-    border-color: #7c5dfa;
-    box-shadow: 0 0 0 3px rgba(124, 93, 250, 0.18);
-  }
-
-  button {
-    justify-self: start;
-    padding: 0.85rem 1.75rem;
-    border-radius: 999px;
-    border: none;
-    background: linear-gradient(135deg, #7c5dfa, #9b6bff);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 18px 30px rgba(95, 61, 170, 0.25);
-  }
-
-  button:hover {
-    transform: translateY(-1px);
-  }
-
-  small {
-    color: #c23b4b;
-  }
-
-  .error-banner {
-    background: rgba(194, 59, 75, 0.12);
-    border-radius: 16px;
-    padding: 0.75rem 1rem;
-    color: #781728;
-    max-width: 620px;
-    margin-bottom: 1.5rem;
-  }
-
-  .success {
-    background: rgba(120, 94, 245, 0.12);
-    border-radius: 20px;
-    padding: 1.75rem;
-    margin-bottom: 2rem;
-    max-width: 620px;
-  }
-
-  .success .links {
-    display: grid;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .success a {
-    color: #5533a5;
-    word-break: break-all;
-  }
-
-  .success .label {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-
-  .hint {
-    color: rgba(42, 23, 72, 0.7);
-  }
-</style>

@@ -1,18 +1,20 @@
-<section class="hero">
-  <div class="hero-copy">
-    <h1>Signup lists your guests will actually love using.</h1>
-    <p>
+<section class="grid gap-12 grid-cols-[repeat(auto-fit,minmax(280px,1fr))] items-center">
+  <div>
+    <h1 class="text-[clamp(2.6rem,5vw,3.6rem)] leading-tight mb-6 font-bold bg-gradient-to-br from-dark-800 to-primary-800 bg-clip-text text-transparent">Signup lists your guests will actually love using.</h1>
+    <p class="text-lg max-w-[38ch] text-dark-900/80 leading-relaxed">
       PetalBoard helps hosts collect potluck items, organize house events, and keep guests in the
       loop without requiring accounts.
     </p>
-    <div class="cta-row">
-      <a class="cta" href="/create">Create an event</a>
-      <a class="secondary" href="/manage-signup">Manage a signup</a>
+    <div class="flex gap-4 mt-8 flex-wrap">
+      <a class="inline-flex items-center justify-center px-7 py-3.5 rounded-full no-underline font-semibold transition-all hover:-translate-y-0.5 hover:shadow-2xl bg-primary-gradient text-white shadow-button" href="/create">Create an event</a>
     </div>
   </div>
-  <div class="hero-card">
-    <p class="card-title">Instant overview</p>
-    <ul>
+  <div class="bg-white rounded-[20px] p-8 shadow-card-hover border border-primary-700/5 transition-all hover:shadow-2xl hover:-translate-y-1">
+    <p class="font-semibold text-dark-500 mb-4 flex items-center gap-2">
+      <span class="text-2xl">✨</span>
+      Instant overview
+    </p>
+    <ul class="pl-5 grid gap-2 text-dark-700">
       <li>Track remaining slots in real time</li>
       <li>Share public and manage links with one click</li>
       <li>Secure edits with a PIN instead of passwords</li>
@@ -20,29 +22,38 @@
   </div>
 </section>
 
-<section class="features">
-  <article>
-    <h2>Organizers</h2>
-    <p>Create an event, add slots, and share the link—done.</p>
-    <ul>
+<section class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6 mt-16">
+  <article class="bg-white rounded-[18px] p-8 shadow-[0_18px_32px_rgba(66,32,121,0.08)] border border-primary-700/5 transition-all hover:shadow-2xl hover:-translate-y-1">
+    <h2 class="mt-0 flex items-center gap-2 text-primary-700">
+      <span class="text-2xl">🎯</span>
+      Organizers
+    </h2>
+    <p class="text-dark-700">Create an event, add slots, and share the link—done.</p>
+    <ul class="pl-5 grid gap-2 text-dark-700">
       <li>Edit event details any time</li>
       <li>Prevent overbooking with server-side checks</li>
       <li>Print an attendee list in a couple taps</li>
     </ul>
   </article>
-  <article>
-    <h2>Guests</h2>
-    <p>No accounts. Just pick a slot, add your name, and choose a PIN.</p>
-    <ul>
+  <article class="bg-white rounded-[18px] p-8 shadow-[0_18px_32px_rgba(66,32,121,0.08)] border border-primary-700/5 transition-all hover:shadow-2xl hover:-translate-y-1">
+    <h2 class="mt-0 flex items-center gap-2 text-primary-700">
+      <span class="text-2xl">👥</span>
+      Guests
+    </h2>
+    <p class="text-dark-700">No accounts. Just pick a slot, add your name, and choose a PIN.</p>
+    <ul class="pl-5 grid gap-2 text-dark-700">
       <li>Mobile-first sign up experience</li>
       <li>Make changes later with your signup ID</li>
       <li>Automatic email reminders (coming soon)</li>
     </ul>
   </article>
-  <article>
-    <h2>Built for real life</h2>
-    <p>All data stays private to your event. No ads, no dark patterns.</p>
-    <ul>
+  <article class="bg-white rounded-[18px] p-8 shadow-[0_18px_32px_rgba(66,32,121,0.08)] border border-primary-700/5 transition-all hover:shadow-2xl hover:-translate-y-1">
+    <h2 class="mt-0 flex items-center gap-2 text-primary-700">
+      <span class="text-2xl">🔒</span>
+      Built for real life
+    </h2>
+    <p class="text-dark-700">All data stays private to your event. No ads, no dark patterns.</p>
+    <ul class="pl-5 grid gap-2 text-dark-700">
       <li>SQLite by default, Postgres-ready for production</li>
       <li>Scrypt hashed PINs for secure edit links</li>
       <li>Open source and ready to self-host</li>
@@ -50,131 +61,37 @@
   </article>
 </section>
 
-<section class="flow">
+<section class="mt-20 grid gap-8 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center">
   <div>
-    <h2>How it works</h2>
-    <ol>
-      <li>Create an event and add the items you need.</li>
-      <li>Share the public link with your guests.</li>
-      <li>Guests reserve their slot and lock it with a PIN.</li>
-      <li>They can edit or cancel later with their signup ID.</li>
+    <h2 class="text-3xl font-bold mb-4 text-dark-800">How it works</h2>
+    <ol class="pl-5 grid gap-3 text-dark-700 text-lg">
+      <li class="pl-2"><strong>Create an event</strong> and add the items you need.</li>
+      <li class="pl-2"><strong>Share the public link</strong> with your guests.</li>
+      <li class="pl-2"><strong>Guests reserve their slot</strong> and lock it with a PIN.</li>
+      <li class="pl-2"><strong>They can edit or cancel</strong> later with their signup ID.</li>
     </ol>
   </div>
-  <div class="callout">
-    <h3>Ready to go?</h3>
-    <p>PetalBoard can be deployed in a couple commands. Start with SQLite today and upgrade later.</p>
-    <a class="cta" href="/create">Launch your event</a>
+  <div class="bg-gradient-to-br from-primary-700/15 to-accent-500/20 rounded-[24px] p-10 shadow-xl border border-primary-700/10 hover:shadow-2xl transition-all">
+    <h3 class="mt-0 text-2xl font-bold text-dark-800 mb-3">Ready to go? 🚀</h3>
+    <p class="text-dark-700 mb-4 leading-relaxed">PetalBoard is fully open source.</p>
+    <a
+      class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full no-underline font-semibold transition-all hover:-translate-y-0.5 hover:shadow-2xl bg-white text-primary-700 border border-primary-500/40 shadow-sm"
+      href="https://github.com/petalcat/petalboard"
+      target="_blank"
+      rel="noreferrer"
+    >
+      <span>Explore the GitHub repo</span>
+      <span aria-hidden="true" class="text-lg">↗</span>
+    </a>
+    <a
+      class="mt-4 inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full no-underline font-semibold transition-all hover:-translate-y-0.5 hover:shadow-2xl bg-primary-gradient text-white shadow-button"
+      href="/create"
+    >
+      <span>Launch the hosted builder</span>
+      <span aria-hidden="true" class="text-lg">→</span>
+    </a>
+    <p class="text-xs text-dark-600 mt-3">
+      Prefer writing code? Fork the repo. Want the hosted experience? Jump straight into the builder.
+    </p>
   </div>
 </section>
-
-<style>
-  .hero {
-    display: grid;
-    gap: 3rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    align-items: center;
-  }
-
-  .hero-copy h1 {
-    font-size: clamp(2.6rem, 5vw, 3.6rem);
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-copy p {
-    font-size: 1.1rem;
-    max-width: 38ch;
-    color: rgba(42, 23, 72, 0.8);
-  }
-
-  .cta-row {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-  }
-
-  .cta,
-  .secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.85rem 1.75rem;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .cta {
-    background: linear-gradient(135deg, #7c5dfa, #9b6bff);
-    color: white;
-    box-shadow: 0 18px 30px rgba(95, 61, 170, 0.25);
-  }
-
-  .secondary {
-    background: rgba(124, 93, 250, 0.12);
-    color: #5533a5;
-  }
-
-  .cta:hover,
-  .secondary:hover {
-    transform: translateY(-2px);
-  }
-
-  .hero-card {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 25px 40px rgba(66, 32, 121, 0.12);
-  }
-
-  .hero-card .card-title {
-    font-weight: 600;
-    color: #5533a5;
-    margin-bottom: 1rem;
-  }
-
-  .hero-card ul,
-  .features ul,
-  .flow ol {
-    padding-left: 1.2rem;
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    margin-top: 4rem;
-  }
-
-  .features article {
-    background: white;
-    border-radius: 18px;
-    padding: 2rem;
-    box-shadow: 0 18px 32px rgba(66, 32, 121, 0.08);
-  }
-
-  .features h2 {
-    margin-top: 0;
-  }
-
-  .flow {
-    margin-top: 5rem;
-    display: grid;
-    gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
-
-  .callout {
-    background: linear-gradient(135deg, rgba(124, 93, 250, 0.12), rgba(155, 107, 255, 0.18));
-    border-radius: 20px;
-    padding: 2.5rem;
-  }
-
-  .callout h3 {
-    margin-top: 0;
-  }
-</style>

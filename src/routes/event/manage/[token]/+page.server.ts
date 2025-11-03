@@ -1,86 +1,137 @@
-import { fail, error } from '@sveltejs/kit';
-import { z } from 'zod';
+import { fail, error, redirect } from "@sveltejs/kit";
+import { z } from "zod";
 
-import prisma from '$lib/server/prisma';
-import { eventSchema, slotSchema } from '$lib/server/validation';
+import prisma from "$lib/server/prisma";
+import { eventSchema, questionSchema } from "$lib/server/validation";
 
-const slotUpdateSchema = slotSchema.extend({ slotId: z.string().cuid() });
-const slotTargetSchema = z.object({ slotId: z.string().cuid() });
-const signupTargetSchema = z.object({ signupId: z.string().cuid() });
+const questionUpdateSchema = questionSchema.extend({
+  questionId: z.string().cuid(),
+});
+const questionTargetSchema = z.object({ questionId: z.string().cuid() });
+const rsvpTargetSchema = z.object({ rsvpId: z.string().cuid() });
 
 async function getEventId(token: string) {
   const event = await prisma.event.findUnique({
     where: { manageToken: token },
-    select: { id: true }
+    select: { id: true },
   });
 
   if (!event) {
-    throw error(404, 'Event not found');
+    throw error(404, "Event not found");
   }
 
   return event.id;
 }
 
-export const load = async ({ params }) => {
+export const load = async ({ params, locals }) => {
   const event = await prisma.event.findUnique({
     where: { manageToken: params.token },
     select: {
       id: true,
+      userId: true,
       title: true,
       description: true,
       date: true,
+      endDate: true,
       location: true,
+      rsvpLimit: true,
       publicCode: true,
-      slots: {
-        orderBy: { label: 'asc' },
+      questions: {
+        orderBy: { order: "asc" },
         select: {
           id: true,
+          type: true,
           label: true,
           description: true,
+          required: true,
+          options: true,
           quantity: true,
-          signups: { select: { id: true } }
-        }
+          isPublic: true,
+          spotifyPlaylistId: true,
+          songsPerUser: true,
+          order: true,
+          _count: { select: { responses: true } },
+        },
       },
-      signups: {
-        orderBy: { createdAt: 'desc' },
+      rsvps: {
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
           name: true,
           email: true,
+          status: true,
           createdAt: true,
-          slot: { select: { label: true } }
-        }
-      }
-    }
+          responses: {
+            select: {
+              questionId: true,
+              value: true,
+              question: { select: { label: true, type: true } },
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!event) {
-    throw error(404, 'Event not found');
+    throw error(404, "Event not found");
   }
 
+  // Verify the user owns this event
+  if (!locals.user || locals.user.id !== event.userId) {
+    throw error(403, "You don't have permission to manage this event");
+  }
+
+  // Check if user has Spotify connected
+  const user = await prisma.user.findUnique({
+    where: { id: locals.user.id },
+    select: { spotifyAccessToken: true },
+  });
+
   return {
+    hasSpotifyConnected: !!user?.spotifyAccessToken,
     event: {
       id: event.id,
       title: event.title,
       description: event.description,
       date: event.date,
+      endDate: event.endDate,
       location: event.location,
+      rsvpLimit: event.rsvpLimit,
       publicCode: event.publicCode,
-      slots: event.slots.map((slot) => ({
-        id: slot.id,
-        label: slot.label,
-        description: slot.description,
-        quantity: slot.quantity,
-        taken: slot.signups.length
-      }))
+      questions: event.questions.map((question) => ({
+        id: question.id,
+        type: question.type,
+        label: question.label,
+        description: question.description,
+        required: question.required,
+        options: question.options ? JSON.parse(question.options) : null,
+        quantity: question.quantity,
+        isPublic: question.isPublic,
+        order: question.order,
+        responseCount: question._count.responses,
+        spotifyPlaylistId: question.spotifyPlaylistId ?? null,
+        songsPerUser: question.songsPerUser ?? null,
+      })),
     },
-    signups: event.signups.map((signup) => ({
-      id: signup.id,
-      name: signup.name,
-      email: signup.email,
-      createdAt: signup.createdAt,
-      slotLabel: signup.slot.label
-    }))
+    rsvps: event.rsvps.map((rsvp) => ({
+      id: rsvp.id,
+      name: rsvp.name,
+      email: rsvp.email,
+      status: rsvp.status,
+      createdAt: rsvp.createdAt,
+      responses: rsvp.responses.map(
+        (r: {
+          questionId: string;
+          value: string;
+          question: { label: string; type: string };
+        }) => ({
+          questionLabel: r.question.label,
+          questionType: r.question.type,
+          value: r.value,
+        })
+      ),
+    })),
   } as const;
 };
 
@@ -96,131 +147,213 @@ export const actions = {
         success: false,
         errors: parsed.error.flatten().fieldErrors,
         values: raw,
-        type: 'updateEvent'
+        type: "updateEvent",
       });
     }
 
-    const { title, date, location, description } = parsed.data;
+    const { title, date, endDate, location, description } = parsed.data;
 
     await prisma.event.update({
       where: { id: eventId },
       data: {
         title,
         date: new Date(date),
+        endDate: endDate ? new Date(endDate) : null,
         location: location ?? null,
-        description: description ?? null
-      }
+        description: description ?? null,
+      },
     });
 
     return {
       success: true,
-      type: 'updateEvent'
+      type: "updateEvent",
     } as const;
   },
-  addSlot: async ({ params, request }) => {
+  addQuestion: async ({ params, request }) => {
     const eventId = await getEventId(params.token);
     const formData = await request.formData();
     const raw = Object.fromEntries(formData) as Record<string, string>;
-    const parsed = slotSchema.safeParse(raw);
+    const parsed = questionSchema.safeParse(raw);
 
     if (!parsed.success) {
       return fail(400, {
         success: false,
         errors: parsed.error.flatten().fieldErrors,
         values: raw,
-        type: 'addSlot'
+        type: "addQuestion",
       });
     }
 
-    const { label, description, quantity } = parsed.data;
+    const { type, label, description, required, options, quantity, isPublic } =
+      parsed.data;
 
-    await prisma.slot.create({
+    // Extract Spotify-specific fields
+    const spotifyPlaylistId = raw.spotifyPlaylistId || null;
+    const songsPerUser = (() => {
+      if (!raw.songsPerUser) return null;
+      const parsed = Number.parseInt(raw.songsPerUser, 10);
+      return Number.isNaN(parsed) || parsed <= 0 ? null : parsed;
+    })();
+
+    // Get the highest order value for this event
+    const maxOrder = await prisma.question.findFirst({
+      where: { eventId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    await prisma.question.create({
       data: {
+        type,
         label,
         description: description ?? null,
-        quantity,
-        eventId
-      }
+        required: required ?? false,
+        options: options ?? null,
+        quantity: quantity ?? null,
+        isPublic: isPublic ?? false,
+        spotifyPlaylistId,
+        songsPerUser,
+        order: (maxOrder?.order ?? -1) + 1,
+        eventId,
+      },
     });
 
     return {
       success: true,
-      type: 'addSlot'
+      type: "addQuestion",
     } as const;
   },
-  updateSlot: async ({ params, request }) => {
+  updateQuestion: async ({ params, request }) => {
     const eventId = await getEventId(params.token);
     const formData = await request.formData();
     const raw = Object.fromEntries(formData) as Record<string, string>;
-    const parsed = slotUpdateSchema.safeParse(raw);
+    const parsed = questionUpdateSchema.safeParse(raw);
 
     if (!parsed.success) {
       return fail(400, {
         success: false,
         errors: parsed.error.flatten().fieldErrors,
         values: raw,
-        type: 'updateSlot'
+        type: "updateQuestion",
       });
     }
 
-    const { slotId, label, description, quantity } = parsed.data;
+    const {
+      questionId,
+      type,
+      label,
+      description,
+      required,
+      options,
+      quantity,
+      isPublic,
+    } = parsed.data;
 
-    const slot = await prisma.slot.findFirst({ where: { id: slotId, eventId } });
-    if (!slot) {
-      return fail(404, { success: false, message: 'Slot not found.', type: 'updateSlot' });
+    // Spotify-specific fields from form
+    const spotifyPlaylistId = raw.spotifyPlaylistId || null;
+    const songsPerUser = (() => {
+      if (!raw.songsPerUser) return null;
+      const parsed = Number.parseInt(raw.songsPerUser, 10);
+      return Number.isNaN(parsed) || parsed <= 0 ? null : parsed;
+    })();
+
+    const question = await prisma.question.findFirst({
+      where: { id: questionId, eventId },
+    });
+    if (!question) {
+      return fail(404, {
+        success: false,
+        message: "Question not found.",
+        type: "updateQuestion",
+      });
     }
 
-    await prisma.slot.update({
-      where: { id: slotId },
+    await prisma.question.update({
+      where: { id: questionId },
       data: {
+        type,
         label,
         description: description ?? null,
-        quantity
-      }
+        required: required ?? false,
+        options: options ?? null,
+        quantity: quantity ?? null,
+        spotifyPlaylistId,
+        songsPerUser,
+        isPublic: isPublic ?? false,
+      },
     });
 
-    return { success: true, type: 'updateSlot' } as const;
+    return { success: true, type: "updateQuestion" } as const;
   },
-  deleteSlot: async ({ params, request }) => {
+  deleteQuestion: async ({ params, request }) => {
     const eventId = await getEventId(params.token);
     const formData = await request.formData();
     const raw = Object.fromEntries(formData) as Record<string, string>;
-    const parsed = slotTargetSchema.safeParse(raw);
+    const parsed = questionTargetSchema.safeParse(raw);
 
     if (!parsed.success) {
-      return fail(400, { success: false, message: 'Invalid request.', type: 'deleteSlot' });
+      return fail(400, {
+        success: false,
+        message: "Invalid request.",
+        type: "deleteQuestion",
+      });
     }
 
-    const { slotId } = parsed.data;
+    const { questionId } = parsed.data;
 
-    const slot = await prisma.slot.findFirst({ where: { id: slotId, eventId } });
-    if (!slot) {
-      return fail(404, { success: false, message: 'Slot not found.', type: 'deleteSlot' });
+    const question = await prisma.question.findFirst({
+      where: { id: questionId, eventId },
+    });
+    if (!question) {
+      return fail(404, {
+        success: false,
+        message: "Question not found.",
+        type: "deleteQuestion",
+      });
     }
 
-    await prisma.slot.delete({ where: { id: slotId } });
+    await prisma.question.delete({ where: { id: questionId } });
 
-    return { success: true, type: 'deleteSlot' } as const;
+    return { success: true, type: "deleteQuestion" } as const;
   },
-  deleteSignup: async ({ params, request }) => {
+  deleteRsvp: async ({ params, request }) => {
     const eventId = await getEventId(params.token);
     const formData = await request.formData();
     const raw = Object.fromEntries(formData) as Record<string, string>;
-    const parsed = signupTargetSchema.safeParse(raw);
+    const parsed = z.object({ rsvpId: z.string().cuid() }).safeParse(raw);
 
     if (!parsed.success) {
-      return fail(400, { success: false, message: 'Invalid request.', type: 'deleteSignup' });
+      return fail(400, {
+        success: false,
+        message: "Invalid request.",
+        type: "deleteRsvp",
+      });
     }
 
-    const { signupId } = parsed.data;
+    const { rsvpId } = parsed.data;
 
-    const signup = await prisma.signup.findFirst({ where: { id: signupId, eventId } });
-    if (!signup) {
-      return fail(404, { success: false, message: 'Signup not found.', type: 'deleteSignup' });
+    const rsvp = await prisma.rsvp.findFirst({
+      where: { id: rsvpId, eventId },
+    });
+    if (!rsvp) {
+      return fail(404, {
+        success: false,
+        message: "RSVP not found.",
+        type: "deleteRsvp",
+      });
     }
 
-    await prisma.signup.delete({ where: { id: signupId } });
+    await prisma.rsvp.delete({ where: { id: rsvpId } });
 
-    return { success: true, type: 'deleteSignup' } as const;
-  }
+    return { success: true, type: "deleteRsvp" } as const;
+  },
+  deleteEvent: async ({ params, locals }) => {
+    const eventId = await getEventId(params.token);
+
+    // Delete the event (cascading deletes will handle questions and responses)
+    await prisma.event.delete({ where: { id: eventId } });
+
+    // Redirect to dashboard
+    throw redirect(303, "/dashboard");
+  },
 };

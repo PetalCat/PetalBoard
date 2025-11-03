@@ -1,5 +1,19 @@
 <script lang="ts">
-  let { children } = $props();
+  import '../app.css';
+  import type { LayoutData } from './$types';
+
+  let { children, data } = $props<{ children: any; data: LayoutData }>();
+  const user = $derived(data.user);
+  let mobileNavOpen = $state(false);
+
+  function closeMobileNav() {
+    mobileNavOpen = false;
+  }
+
+  $effect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.classList.toggle('no-scroll', mobileNavOpen);
+  });
 </script>
 
 <svelte:head>
@@ -16,99 +30,74 @@
   />
 </svelte:head>
 
-<div class="app-shell">
-  <header class="topbar">
-    <a class="brand" href="/">PetalBoard</a>
-    <nav class="nav">
-      <a href="/create">Create an event</a>
-      <a href="/manage-signup">Manage a signup</a>
+<div class="flex flex-col min-h-screen">
+  <header class="sticky top-0 z-30 flex items-center justify-between px-4 py-3 lg:px-12 backdrop-blur-[14px] bg-[rgba(252,250,255,0.92)] border-b border-[rgba(122,95,230,0.12)]">
+    <a class="font-brand font-bold text-2xl lg:text-[1.85rem] no-underline text-dark-600 flex items-center gap-2" href="/" onclick={closeMobileNav}>
+      <span class="text-3xl lg:text-4xl">🌸</span>
+      <span>PetalBoard</span>
+    </a>
+
+    <div class="flex items-center gap-3 md:hidden">
+      {#if user}
+        <a href="/create" class="btn-secondary px-4 py-2 rounded-2xl text-sm font-semibold" onclick={closeMobileNav}>
+          New Event
+        </a>
+      {/if}
+      <button
+        class="mobile-nav-toggle"
+        type="button"
+        aria-label={mobileNavOpen ? 'Close navigation' : 'Open navigation'}
+        aria-expanded={mobileNavOpen}
+        onclick={() => (mobileNavOpen = !mobileNavOpen)}
+      >
+        <span class:open={mobileNavOpen}></span>
+        <span class:open={mobileNavOpen}></span>
+        <span class:open={mobileNavOpen}></span>
+      </button>
+    </div>
+
+    <nav class="hidden md:flex gap-6 items-center">
+      {#if user}
+        <a href="/dashboard" class="no-underline font-medium text-dark-700 hover:text-primary-700">Dashboard</a>
+        <a href="/create" class="no-underline font-medium text-dark-700 hover:text-primary-700">Create Event</a>
+        <a href="/settings" class="no-underline font-medium text-dark-700 hover:text-primary-700">Settings</a>
+        <span class="text-dark-700/70 text-sm">{user.email}</span>
+        <form method="POST" action="/logout" class="inline">
+          <button type="submit" class="bg-transparent border-none text-dark-700 font-inherit font-medium cursor-pointer p-0 hover:text-primary-700">Log out</button>
+        </form>
+      {:else}
+        <a href="/login" class="no-underline font-medium text-dark-700 hover:text-primary-700">Log in</a>
+        <a href="/register" class="no-underline font-medium text-dark-700 hover:text-primary-700">Register</a>
+      {/if}
     </nav>
   </header>
 
-  <main class="content">{@render children()}</main>
+  {#if mobileNavOpen}
+    <div class="mobile-nav-overlay" onclick={closeMobileNav}></div>
+  {/if}
 
-  <footer class="footer">
+  <aside class:hidden={!mobileNavOpen} class="mobile-nav-panel">
+    <nav class="flex flex-col gap-3">
+      {#if user}
+        <a href="/dashboard" class="mobile-nav-link" onclick={closeMobileNav}>Dashboard</a>
+        <a href="/create" class="mobile-nav-link" onclick={closeMobileNav}>Create Event</a>
+        <a href="/settings" class="mobile-nav-link" onclick={closeMobileNav}>Settings</a>
+        <div class="mobile-nav-meta">
+          <span>{user.email}</span>
+          <form method="POST" action="/logout">
+            <button type="submit" class="mobile-nav-link text-left w-full" onclick={closeMobileNav}>Log out</button>
+          </form>
+        </div>
+      {:else}
+        <a href="/login" class="mobile-nav-link" onclick={closeMobileNav}>Log in</a>
+        <a href="/register" class="mobile-nav-link" onclick={closeMobileNav}>Register</a>
+      {/if}
+    </nav>
+  </aside>
+
+  <main class="flex-1 w-full max-w-[1100px] mx-auto px-4 pt-6 pb-20 lg:px-12 lg:py-12">{@render children()}</main>
+
+  <footer class="text-center py-8 px-4 text-[rgba(46,24,83,0.7)] text-sm">
     <p>Built for effortless potlucks and house events.</p>
   </footer>
 </div>
-
-<style>
-  :global(body) {
-    margin: 0;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(180deg, #f8f5ff 0%, #fdfcff 35%, #f7fcff 100%);
-    color: #2a1748;
-    min-height: 100vh;
-  }
-
-  :global(a) {
-    color: inherit;
-  }
-
-  .app-shell {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem clamp(1rem, 4vw, 3rem);
-    backdrop-filter: blur(14px);
-    background: rgba(252, 250, 255, 0.85);
-    border-bottom: 1px solid rgba(122, 95, 230, 0.12);
-  }
-
-  .brand {
-    font-family: 'Lexend', 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: clamp(1.4rem, 2.4vw, 1.85rem);
-    text-decoration: none;
-    color: #5731a5;
-  }
-
-  .nav {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-  }
-
-  .nav a {
-    text-decoration: none;
-    font-weight: 500;
-    color: #3e2a75;
-  }
-
-  .nav a:hover {
-    color: #7c5dfa;
-  }
-
-  .content {
-    flex: 1;
-    width: min(1100px, 100%);
-    margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 3rem) 4rem;
-  }
-
-  .footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    color: rgba(46, 24, 83, 0.7);
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 720px) {
-    .nav {
-      display: none;
-    }
-
-    .topbar {
-      justify-content: center;
-    }
-  }
-</style>

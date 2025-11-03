@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const optionalText = (schema: z.ZodString) =>
   z
@@ -30,47 +30,112 @@ const strictUpdateText = (schema: z.ZodString) =>
     .pipe(schema.optional());
 
 export const eventSchema = z.object({
-  title: z.string().trim().min(3, 'Title must be at least 3 characters'),
+  title: z.string().trim().min(3, "Title must be at least 3 characters"),
   date: z
     .string()
     .trim()
-    .refine((value) => !Number.isNaN(Date.parse(value)), { message: 'Enter a valid date' }),
+    .refine((value) => !Number.isNaN(Date.parse(value)), {
+      message: "Enter a valid date",
+    }),
+  endDate: optionalText(
+    z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
+      message: "Enter a valid end date",
+    })
+  ),
+  rsvpLimit: z
+    .string()
+    .optional()
+    .transform((value) => {
+      if (!value || value.trim() === "") return undefined;
+      const num = Number.parseInt(value.trim(), 10);
+      return Number.isNaN(num) ? undefined : num;
+    })
+    .refine((value) => value === undefined || (value > 0 && value <= 10000), {
+      message: "Must be between 1 and 10000",
+    }),
   location: optionalText(z.string().max(120)),
-  description: optionalText(z.string().max(600))
+  description: optionalText(z.string().max(600)),
 });
 
-export const slotSchema = z.object({
-  label: z.string().trim().min(2, 'Provide a short label'),
+export const questionSchema = z.object({
+  type: z.enum([
+    "text",
+    "multiple_choice",
+    "checkbox",
+    "slots",
+    "spotify_playlist",
+  ]),
+  label: z.string().trim().min(2, "Question text is required"),
   description: optionalText(z.string().max(300)),
+  required: z
+    .string()
+    .optional()
+    .transform((value) => value === "on" || value === "true"),
+  options: z
+    .string()
+    .optional()
+    .transform((value) => {
+      if (!value || value.trim() === "") return undefined;
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? JSON.stringify(parsed) : undefined;
+      } catch {
+        // Try parsing as newline-separated text
+        const items = value
+          .split("\n")
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0);
+        return items.length > 0 ? JSON.stringify(items) : undefined;
+      }
+    }),
   quantity: z
     .string()
-    .trim()
-    .refine((value) => /^\d+$/.test(value), { message: 'Quantity must be a positive number' })
-    .transform((value) => Number.parseInt(value, 10))
-    .refine((value) => value > 0 && value <= 1000, { message: 'Quantity must be between 1 and 1000' })
+    .optional()
+    .transform((value) => {
+      if (!value || value.trim() === "") return undefined;
+      const num = Number.parseInt(value.trim(), 10);
+      return Number.isNaN(num) ? undefined : num;
+    })
+    .refine((value) => value === undefined || (value > 0 && value <= 1000), {
+      message: "Open slots must be between 1 and 1000",
+    }),
+  isPublic: z
+    .string()
+    .optional()
+    .transform((value) => value === "on" || value === "true"),
 });
 
-export const signupSchema = z.object({
-  name: z.string().trim().min(2, 'Name is required'),
-  email: optionalText(z.string().email('Enter a valid email').max(160)),
-  pin: z.string().regex(/^[0-9]{4,6}$/, 'PIN must be 4-6 digits'),
-  slotId: z.string().cuid()
+export const rsvpSchema = z.object({
+  name: z.string().trim().min(2, "Name is required"),
+  email: optionalText(z.string().email("Enter a valid email").max(160)),
+  pin: z.string().regex(/^[0-9]{4,6}$/, "PIN must be 4-6 digits"),
+  status: z.enum(["attending", "maybe", "not_attending"]).default("attending"),
+  responses: z.record(z.string(), z.string()).optional().default({}),
 });
 
-export const signupUpdateSchema = z
-  .object({
-    signupId: z.string().cuid(),
-    pin: z.string().regex(/^[0-9]{4,6}$/, 'PIN must be 4-6 digits'),
-    name: strictUpdateText(z.string().min(2)),
-    email: nullableUpdateText(z.string().email('Enter a valid email').max(160)),
-    slotId: z.string().cuid().optional()
-  })
-  .refine((data) => data.name !== undefined || data.email !== undefined || data.slotId, {
-    message: 'Provide an update to apply',
-    path: ['name']
-  });
+export const rsvpUpdateSchema = z.object({
+  name: z.string().trim().min(2, "Name is required"),
+  email: optionalText(z.string().email("Enter a valid email").max(160)),
+  pin: z.string().regex(/^[0-9]{4,6}$/, "PIN must be 4-6 digits"),
+  status: z.enum(["attending", "maybe", "not_attending"]).default("attending"),
+  responses: z.record(z.string(), z.string()).optional().default({}),
+});
 
 export const lookupSchema = z.object({
   signupId: z.string().cuid(),
-  pin: z.string().regex(/^[0-9]{4,6}$/, 'PIN must be 4-6 digits')
+  pin: z.string().regex(/^[0-9]{4,6}$/, "PIN must be 4-6 digits"),
+});
+
+export const registerSchema = z.object({
+  email: z.string().trim().email("Enter a valid email").max(160),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(100),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
+});
+
+export const loginSchema = z.object({
+  email: z.string().trim().email("Enter a valid email"),
+  password: z.string().min(1, "Password is required"),
 });

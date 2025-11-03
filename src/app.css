@@ -1,0 +1,375 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 font-sans bg-app-gradient text-dark-900 min-h-screen;
+  }
+
+  body.no-scroll {
+    @apply overflow-hidden;
+  }
+
+  a {
+    @apply text-inherit;
+  }
+}
+
+@layer components {
+  /* Form inputs */
+  .input-field {
+    @apply rounded-xl border border-primary-700 px-4 py-3 bg-white;
+    border-color: rgba(124, 93, 250, 0.25);
+  }
+
+  .input-field:focus {
+    @apply outline-none border-primary-700;
+    box-shadow: 0 0 0 3px rgba(124, 93, 250, 0.18);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply px-7 py-3 rounded-full border-none text-white font-semibold cursor-pointer;
+    background: linear-gradient(135deg, #7c5dfa, #9b6bff);
+    box-shadow: 0 18px 30px rgba(95, 61, 170, 0.25);
+    transition: transform 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    @apply px-7 py-3 rounded-full border-none font-semibold cursor-pointer;
+    background: rgba(124, 93, 250, 0.12);
+    color: #5533a5;
+    transition: transform 0.2s;
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    @apply bg-transparent border-none font-inherit font-medium cursor-pointer p-0;
+    color: #7c5dfa;
+  }
+
+  .btn-ghost:hover {
+    @apply underline;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-3xl p-6 lg:p-10;
+    box-shadow: 0 20px 40px rgba(60, 35, 110, 0.08);
+  }
+
+  .card-sm {
+    @apply bg-white p-6;
+    border-radius: 18px;
+    box-shadow: 0 18px 32px rgba(66, 32, 121, 0.08);
+  }
+
+  /* Form labels */
+  .form-label {
+    @apply grid gap-2 font-medium;
+    color: #40246b;
+  }
+
+  /* Error text */
+  .error-text {
+    @apply text-sm;
+    color: #c23b4b;
+  }
+
+  /* Banners */
+  .error-banner {
+    @apply rounded-2xl px-4 py-3;
+    background: rgba(194, 59, 75, 0.12);
+    color: #781728;
+  }
+
+  .success-banner {
+    @apply p-6 lg:p-8;
+    background: rgba(120, 94, 245, 0.12);
+    border-radius: 20px;
+  }
+
+  /* Status badges */
+  .badge-attending {
+    background: rgba(34, 197, 94, 0.1);
+    color: #15803d;
+  }
+
+  .badge-maybe {
+    background: rgba(251, 191, 36, 0.1);
+    color: #d97706;
+  }
+
+  .badge-not-attending {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+
+  .badge-status {
+    @apply rounded-full px-4 py-2 text-sm font-semibold;
+    background: rgba(124, 93, 250, 0.14);
+    color: #5533a5;
+  }
+
+  /* Chevron animation for details/summary */
+  .chevron-icon {
+    @apply transition-transform duration-300 ease-in-out;
+  }
+
+  details[open] .chevron-icon {
+    @apply rotate-90;
+  }
+
+  /* Tab buttons */
+  .tab-btn {
+    @apply bg-transparent border-none px-6 py-4 text-base font-semibold cursor-pointer transition-all duration-200 flex items-center gap-2 -mb-0.5;
+    color: rgba(64, 36, 107, 0.6);
+    border-bottom: 3px solid transparent;
+  }
+
+  .tab-btn:hover {
+    @apply text-primary-600;
+    background: rgba(124, 93, 250, 0.05);
+  }
+
+  .tab-btn-active {
+    @apply text-primary-600;
+    border-bottom-color: #7c5dfa;
+  }
+
+  .tab-btn:not(.tab-btn-active) .badge-primary {
+    background: rgba(124, 93, 250, 0.3);
+  }
+
+  /* Mobile navigation */
+  .mobile-nav-toggle {
+    @apply relative flex flex-col justify-center items-center w-11 h-11 rounded-xl border border-[rgba(124,93,250,0.25)] bg-white shadow-sm cursor-pointer transition-all duration-200;
+  }
+
+  .mobile-nav-toggle span {
+    @apply block w-5 h-[2px] bg-dark-700 rounded-full transition-all duration-200;
+  }
+
+  .mobile-nav-toggle span:nth-child(2) {
+    @apply my-1;
+  }
+
+  .mobile-nav-toggle span.open:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .mobile-nav-toggle span.open:nth-child(2) {
+    @apply opacity-0;
+  }
+
+  .mobile-nav-toggle span.open:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .mobile-nav-overlay {
+    @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-20;
+  }
+
+  .mobile-nav-panel {
+    @apply md:hidden fixed top-[68px] inset-x-0 z-30 px-4 pb-8;
+  }
+
+  .mobile-nav-panel nav {
+    @apply bg-white/95 border border-[rgba(124,93,250,0.18)] rounded-3xl p-6 shadow-[0_18px_40px_rgba(60,35,110,0.12)];
+  }
+
+  .mobile-nav-link {
+    @apply block no-underline font-semibold text-dark-700 text-base px-4 py-3 rounded-2xl transition-colors duration-150;
+  }
+
+  .mobile-nav-link:hover {
+    background: rgba(124, 93, 250, 0.08);
+    color: #5b34b7;
+  }
+
+  .mobile-nav-meta {
+    @apply mt-4 pt-4 border-t border-[rgba(124,93,250,0.12)] text-sm text-dark-600;
+  }
+
+  .mobile-nav-meta span {
+    @apply block mb-3 font-medium;
+  }
+}
+
+/* Modal styles */
+.modal-backdrop {
+  @apply fixed inset-0 flex items-center justify-center z-[1000] p-4;
+  background: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  @apply bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease;
+}
+
+.modal.large {
+  @apply max-w-2xl;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  @apply flex justify-between items-center px-6 py-6 border-b;
+  border-color: rgba(42, 23, 72, 0.1);
+}
+
+.modal-header h3 {
+  @apply m-0 text-dark-900 text-xl font-bold;
+}
+
+.close-btn {
+  @apply bg-none border-none text-4xl leading-none cursor-pointer p-0 w-8 h-8 flex items-center justify-center rounded-lg transition-all;
+  color: rgba(42, 23, 72, 0.5);
+}
+
+.close-btn:hover {
+  background: rgba(42, 23, 72, 0.1);
+  color: #2a1748;
+}
+
+.modal form {
+  @apply px-6 py-6;
+}
+
+.modal-actions {
+  @apply flex gap-3 mt-6;
+}
+
+.modal-actions .btn-primary,
+.modal-actions .btn-secondary {
+  @apply flex-1;
+}
+
+/* Status options for radio buttons */
+.status-section {
+  @apply grid gap-2;
+}
+
+.status-label {
+  @apply font-medium text-dark-900;
+}
+
+.status-options {
+  @apply grid gap-2;
+}
+
+.status-option {
+  @apply flex items-center gap-3 p-4 border-2 rounded-xl cursor-pointer transition-all;
+  border-color: rgba(124, 93, 250, 0.2);
+}
+
+.status-option:has(input:checked) {
+  @apply border-primary-700;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 93, 250, 0.15),
+    rgba(155, 107, 255, 0.1)
+  );
+}
+
+.status-option input[type="radio"] {
+  @apply w-5 h-5 cursor-pointer;
+}
+
+.status-option span {
+  @apply text-dark-900 font-medium;
+}
+
+/* Form sections */
+.questions-section {
+  @apply mt-6;
+}
+
+.questions-section h3 {
+  @apply m-0 mb-4 text-dark-900 text-lg font-bold;
+}
+
+.question-list {
+  @apply grid gap-5;
+}
+
+/* Radio and checkbox options */
+.radio-option,
+.checkbox-option {
+  @apply flex items-start gap-2 cursor-pointer;
+}
+
+.radio-option input,
+.checkbox-option input {
+  @apply mt-1 cursor-pointer;
+}
+
+.radio-option span,
+.checkbox-option span {
+  @apply flex-1 text-dark-900;
+}
+
+fieldset {
+  @apply grid gap-3 border-none p-0;
+}
+
+legend {
+  @apply font-medium text-dark-900 mb-2;
+}
+
+fieldset small {
+  @apply text-sm text-dark-700 -mt-2;
+}
+
+label small {
+  @apply text-sm text-dark-700;
+}
+
+.cancel-form {
+  @apply mt-8 pt-6 border-t;
+  border-color: rgba(123, 95, 250, 0.15);
+}
+
+.cancel-form h3 {
+  @apply text-red-700 mb-2;
+}
+
+.btn-danger {
+  @apply px-7 py-3 rounded-full border font-semibold cursor-pointer transition-all;
+  background: rgba(194, 59, 75, 0.12);
+  color: #c23b4b;
+  border-color: rgba(194, 59, 75, 0.3);
+}
+
+.btn-danger:hover {
+  background: rgba(194, 59, 75, 0.2);
+  border-color: #c23b4b;
+}
