@@ -417,12 +417,15 @@
 
 .modal form {
   @apply px-6 py-6;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px); /* Leave room for header */
 }
 
 /* Mobile adjustments for modal form */
 @media (max-width: 768px) {
   .modal form {
     @apply px-4 py-4;
+    max-height: calc(100dvh - 80px); /* Adjust for mobile header */
   }
 
   /* Ensure all form content fits and wraps properly */

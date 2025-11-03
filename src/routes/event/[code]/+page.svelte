@@ -1621,7 +1621,7 @@ const backgroundOverlayDark = event.backgroundImage
                       name="response_{question.id}"
                       type="text"
                       value={responses[question.id] ?? ''}
-                      required={question.required}
+                      required={question.required && editingStatus !== 'not_attending'}
                       onchange={(e) => responses[question.id] = e.currentTarget.value}
                     />
                   </label>
@@ -1638,7 +1638,7 @@ const backgroundOverlayDark = event.backgroundImage
                           name="response_{question.id}"
                           value={option}
                           checked={responses[question.id] === option}
-                          required={question.required}
+                          required={question.required && editingStatus !== 'not_attending'}
                           onchange={(e) => responses[question.id] = e.currentTarget.value}
                         />
                         <span>{option}</span>
@@ -1682,7 +1682,7 @@ const backgroundOverlayDark = event.backgroundImage
                       name="response_{question.id}"
                       type="text"
                       value={responses[question.id] ?? ''}
-                      required={question.required}
+                      required={question.required && editingStatus !== 'not_attending'}
                       placeholder="What are you bringing?"
                       onchange={(e) => responses[question.id] = e.currentTarget.value}
                     />
@@ -1705,7 +1705,7 @@ const backgroundOverlayDark = event.backgroundImage
                     {/if}
                     <SpotifySongSelector
                       name="response_{question.id}"
-                      required={question.required}
+                      required={question.required && editingStatus !== 'not_attending'}
                       value={responses[question.id] ?? ''}
                       eventCode={event.publicCode}
                       limit={question.songsPerUser ?? null}

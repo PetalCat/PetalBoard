@@ -688,23 +688,25 @@ export const actions = {
     }
 
     // Check required questions
-    // But only for questions that aren't full
-    const requiredQuestions = event.questions.filter((q) => q.required);
-    const missingRequired = requiredQuestions.filter((q) => {
-      // If question has a quantity limit and is full, don't require it
-      if (q.quantity && q.responses.length >= q.quantity) {
-        return false;
-      }
-      // Otherwise, check if it's answered
-      return !responses[q.id] || responses[q.id].trim() === "";
-    });
-
-    if (missingRequired.length > 0) {
-      return fail(400, {
-        success: false,
-        message: "Please answer all required questions.",
-        type: "updateRsvp",
+    // But only for attending/maybe status and questions that aren't full
+    if (status === "attending" || status === "maybe") {
+      const requiredQuestions = event.questions.filter((q) => q.required);
+      const missingRequired = requiredQuestions.filter((q) => {
+        // If question has a quantity limit and is full, don't require it
+        if (q.quantity && q.responses.length >= q.quantity) {
+          return false;
+        }
+        // Otherwise, check if it's answered
+        return !responses[q.id] || responses[q.id].trim() === "";
       });
+
+      if (missingRequired.length > 0) {
+        return fail(400, {
+          success: false,
+          message: "Please answer all required questions.",
+          type: "updateRsvp",
+        });
+      }
     }
 
     // Update the RSVP

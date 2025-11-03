@@ -75,7 +75,7 @@
   />
   <!-- Critical resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://maps.googleapis.com" />
   <link rel="dns-prefetch" href="https://maps.gstatic.com" />
   <link rel="dns-prefetch" href="https://i.scdn.co" />
