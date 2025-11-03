@@ -8,7 +8,4 @@ export default defineConfig({
     host: "0.0.0.0", // Bind to all interfaces to allow IP address access
     port: 5173,
   },
-  ssr: {
-    noExternal: ["@prisma/client"],
-  },
 });
