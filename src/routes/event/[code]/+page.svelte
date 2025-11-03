@@ -775,7 +775,11 @@
     tabindex="0"
     aria-label="Close edit RSVP dialog"
     onclick={closeEditModal}
-    onkeydown={(event) => handleOverlayKeydown(event, closeEditModal)}
+    onkeydown={(event) => {
+      if (event.key === 'Escape') {
+        closeEditModal();
+      }
+    }}
   >
     <div
       class="modal large"
@@ -784,6 +788,7 @@
       aria-labelledby="edit-rsvp-title"
       tabindex="-1"
       onclick={(event) => event.stopPropagation()}
+      onkeydown={(event) => event.stopPropagation()}
     >
       <div class="modal-header">
         <h3 id="edit-rsvp-title">Edit Your RSVP</h3>
@@ -1028,7 +1033,11 @@
     tabindex="0"
     aria-label="Close RSVP dialog"
     onclick={closeRsvpModal}
-    onkeydown={(event) => handleOverlayKeydown(event, closeRsvpModal)}
+    onkeydown={(event) => {
+      if (event.key === 'Escape') {
+        closeRsvpModal();
+      }
+    }}
   >
     <div
       class="modal large"
@@ -1037,6 +1046,7 @@
       aria-labelledby="create-rsvp-title"
       tabindex="-1"
       onclick={(event) => event.stopPropagation()}
+      onkeydown={(event) => event.stopPropagation()}
     >
       <div class="modal-header">
         <h3 id="create-rsvp-title">RSVP to {event.title}</h3>

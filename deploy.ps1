@@ -57,9 +57,9 @@ try {
 
 Write-Host "Starting container on http://localhost:$Port ..." -ForegroundColor Cyan
 
-$envFile = Join-Path (Get-Location) ".env"
+$envFile = Join-Path (Get-Location) ".env.production"
 if (Test-Path $envFile) {
-  Write-Host "Loading environment variables from .env file" -ForegroundColor Cyan
+  Write-Host "Loading environment variables from .env.production file" -ForegroundColor Cyan
   docker run -d `
     --name $containerName `
     -p "$Port`:4173" `
@@ -67,7 +67,7 @@ if (Test-Path $envFile) {
     --env-file $envFile `
     $imageName | Out-Null
 } else {
-  Write-Host "Warning: No .env file found. Starting without environment variables." -ForegroundColor Yellow
+  Write-Host "Warning: No .env.production file found. Starting without environment variables." -ForegroundColor Yellow
   docker run -d `
     --name $containerName `
     -p "$Port`:4173" `
