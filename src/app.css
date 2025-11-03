@@ -6,7 +6,7 @@
   * {
     box-sizing: border-box;
   }
-  
+
   body {
     @apply m-0 font-sans bg-app-gradient text-dark-900 min-h-screen;
     overflow-x: hidden;
@@ -124,7 +124,7 @@
     width: 100%;
     max-width: 100%;
   }
-  
+
   .form-label input,
   .form-label textarea,
   .form-label select {
@@ -347,7 +347,7 @@
     margin: 0;
     box-sizing: border-box;
   }
-  
+
   /* Prevent any horizontal overflow */
   .modal * {
     max-width: 100%;
@@ -378,14 +378,14 @@
     @apply px-4 py-4 sticky top-0 z-10 bg-white;
     gap: 0.5rem;
   }
-  
+
   .modal-header h3 {
     flex: 1;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   .modal-header .close-btn {
     flex-shrink: 0;
   }
@@ -424,14 +424,14 @@
   .modal form {
     @apply px-4 py-4;
   }
-  
+
   /* Ensure all form content fits and wraps properly */
   .modal form * {
     max-width: 100%;
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
-  
+
   .modal form input,
   .modal form textarea,
   .modal form select {
@@ -462,7 +462,7 @@
   .modal-actions .btn-secondary {
     width: 100%;
   }
-  
+
   /* Reduce button padding on small screens to fit better */
   .btn-primary,
   .btn-secondary {
@@ -502,7 +502,7 @@
     @apply p-3 gap-2.5;
     min-height: 48px;
   }
-  
+
   .status-option span {
     font-size: 14px;
   }
@@ -606,30 +606,30 @@ button {
   .form-label {
     gap: 0.375rem;
   }
-  
+
   .form-label > span {
     font-size: 14px;
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
-  
+
   legend {
     font-size: 14px;
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
-  
+
   fieldset small,
   label small {
     font-size: 12px;
     line-height: 1.4;
   }
-  
+
   .radio-option,
   .checkbox-option {
     gap: 0.5rem;
   }
-  
+
   .radio-option span,
   .checkbox-option span {
     font-size: 14px;
