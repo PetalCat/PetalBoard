@@ -29,7 +29,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=4173
-ENV DATABASE_URL="file:./data/dev.db"
+ENV DATABASE_URL="file:/app/data/dev.db"
 
 RUN corepack enable pnpm \
   && mkdir -p data
