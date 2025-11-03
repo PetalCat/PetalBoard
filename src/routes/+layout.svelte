@@ -73,8 +73,14 @@
     name="description"
     content="Create polished event signups without forcing guests to make accounts."
   />
+  <!-- Critical resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+  <link rel="dns-prefetch" href="https://maps.gstatic.com" />
+  <link rel="dns-prefetch" href="https://i.scdn.co" />
+  
+  <!-- Load fonts with optimal display strategy -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap"
     rel="stylesheet"

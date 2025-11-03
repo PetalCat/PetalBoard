@@ -1151,7 +1151,6 @@ html.dark [class*="tab"][class*="active"] {
 
 /* Question type badges and indicators */
 html.dark [class*="badge"] {
-  background-color: rgba(139, 92, 246, 0.2);
   color: #c4b5fd;
   border-color: rgba(139, 92, 246, 0.3);
 }

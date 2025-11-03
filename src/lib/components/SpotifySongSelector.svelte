@@ -160,9 +160,13 @@
           <div class="flex gap-4 items-center">
             {#if track.album.images[0]}
               <img
-                src={track.album.images[0].url}
+                src={track.album.images[2]?.url || track.album.images[0].url}
                 alt={track.album.name}
                 class="w-16 h-16 rounded-lg shadow-md shrink-0"
+                loading="lazy"
+                decoding="async"
+                width="64"
+                height="64"
               />
             {/if}
             <div class="flex-1 min-w-0">
@@ -228,6 +232,10 @@
                   src={track.album.images[2].url}
                   alt={track.album.name}
                   class="w-12 h-12 rounded shadow-sm"
+                  loading="lazy"
+                  decoding="async"
+                  width="48"
+                  height="48"
                 />
               {/if}
               <div class="flex-1 min-w-0">

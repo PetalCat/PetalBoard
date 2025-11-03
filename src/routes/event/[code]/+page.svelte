@@ -2,7 +2,7 @@
   import { formatDate, formatShortDate } from '$lib/utils/format';
   import { enhance } from '$app/forms';
   import type { ActionData, PageData } from './$types';
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { loadGoogleMaps } from '$lib/utils/googleMaps';
   import { env } from '$env/dynamic/public';
   import SpotifySongSelector from '$lib/components/SpotifySongSelector.svelte';
@@ -303,8 +303,12 @@ const backgroundOverlayDark = event.backgroundImage
     }
   });
 
-  // Initialize map if location exists
-  onMount(async () => {
+  let mapLoadRequested = false;
+
+  const requestMapLoad = async () => {
+    if (mapLoadRequested) return;
+    mapLoadRequested = true;
+
     const apiKey = env.PUBLIC_GOOGLE_MAPS_API_KEY;
     if (!event.location || !apiKey || apiKey === 'your-google-maps-api-key') {
       return;
@@ -316,6 +320,43 @@ const backgroundOverlayDark = event.backgroundImage
     } catch (err) {
       console.error('Failed to load map:', err);
     }
+  };
+
+  // Lazily initialize the map when it comes into view
+  onMount(() => {
+    if (!event.location) return;
+
+    let observer: IntersectionObserver | null = null;
+
+    const setupObserver = async () => {
+      await tick();
+
+      if (typeof window === 'undefined' || !mapElement) {
+        requestMapLoad();
+        return;
+      }
+
+      if ('IntersectionObserver' in window) {
+        observer = new IntersectionObserver(
+          (entries) => {
+            const isVisible = entries.some((entry) => entry.isIntersecting);
+            if (isVisible) {
+              observer?.disconnect();
+              requestMapLoad();
+            }
+          },
+          { rootMargin: '200px 0px' }
+        );
+
+        observer.observe(mapElement);
+      } else {
+        requestMapLoad();
+      }
+    };
+
+    setupObserver();
+
+    return () => observer?.disconnect();
   });
 
   async function initializeMap() {
@@ -1264,7 +1305,7 @@ const backgroundOverlayDark = event.backgroundImage
                             {/if}
                           </div>
                         </div>
-                        <div class="flex items-center gap-2 ml-auto sm:ml-0 flex-shrink-0">
+                        <div class="flex items-center gap-2 sm:ml-auto flex-shrink-0">
                           <span class="contributor-chip inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap" style="background-color: {primaryColors[100]}; color: {primaryColors[800]};">
                             <span aria-hidden="true">👤</span>
                             <span class="hidden sm:inline">{entry.contributor}</span>
@@ -1320,7 +1361,7 @@ const backgroundOverlayDark = event.backgroundImage
                             {/if}
                           </div>
                         </div>
-                        <div class="flex items-center gap-2 ml-auto sm:ml-0 flex-shrink-0">
+                        <div class="flex items-center gap-2 sm:ml-auto flex-shrink-0">
                           <span class="contributor-chip inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap" style="background-color: {primaryColors[100]}; color: {primaryColors[800]};">
                             <span aria-hidden="true">👤</span>
                             <span class="hidden sm:inline">{entry.contributor}</span>
@@ -1376,7 +1417,7 @@ const backgroundOverlayDark = event.backgroundImage
                             {/if}
                           </div>
                         </div>
-                        <div class="flex items-center gap-2 ml-auto sm:ml-0 flex-shrink-0">
+                        <div class="flex items-center gap-2 sm:ml-auto flex-shrink-0">
                           <span class="contributor-chip inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap" style="background-color: {primaryColors[100]}; color: {primaryColors[800]};">
                             <span aria-hidden="true">👤</span>
                             <span class="hidden sm:inline">{entry.contributor}</span>
