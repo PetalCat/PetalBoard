@@ -1244,9 +1244,9 @@ const backgroundOverlayDark = event.backgroundImage
     </section>
   {/if}
 
-  <!-- Public Question Responses (Spotify Playlists) -->
-  {#if event.questions.some(q => q.type === 'spotify_playlist' && q.isPublic && q.publicResponses && q.publicResponses.length > 0)}
-    {@const publicQuestions = event.questions.filter(q => q.type === 'spotify_playlist' && q.isPublic && q.publicResponses && q.publicResponses.length > 0)}
+  <!-- Public Question Responses (All Types - In Creation Order) -->
+  {#if event.questions.some(q => q.isPublic && q.publicResponses && q.publicResponses.length > 0)}
+    {@const publicQuestions = event.questions.filter(q => q.isPublic && q.publicResponses && q.publicResponses.length > 0)}
     {#each publicQuestions as question}
       <section class="card event-card mb-8">
         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-3 md:gap-4 pb-4 border-b" style="border-color: {primaryColors[600]}20;">
@@ -1267,9 +1267,11 @@ const backgroundOverlayDark = event.backgroundImage
           </div>
         {/if}
         
-        <div class="flex flex-col gap-4">
-          {#if question.publicResponses.some(r => r.status === 'attending')}
-            {@const attendingTrackEntries = buildPlaylistEntries(question.publicResponses ?? [], 'attending')}
+        {#if question.type === 'spotify_playlist'}
+          <!-- Spotify Playlist Question -->
+          <div class="flex flex-col gap-4">
+            {#if question.publicResponses.some(r => r.status === 'attending')}
+              {@const attendingTrackEntries = buildPlaylistEntries(question.publicResponses ?? [], 'attending')}
             <div class="panel-block tone-attending overflow-hidden">
               <h3
                 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5"
@@ -1439,7 +1441,77 @@ const backgroundOverlayDark = event.backgroundImage
               </div>
             </div>
           {/if}
-        </div>
+          </div>
+        {:else}
+          <!-- Non-Spotify Question (Text/Radio/Checkbox) -->
+          <div class="flex flex-col gap-4">
+            {#if question.publicResponses.some(r => r.status === 'attending')}
+              {@const attendingResponses = question.publicResponses.filter(r => r.status === 'attending')}
+              <div class="panel-block tone-attending overflow-hidden">
+                <h3 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5">
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-bold" style={`background-color: ${primaryColors[600]}; color: white; box-shadow: 0 2px 8px ${withAlpha(primaryColors[600], 0.28)};`}>✓</span>
+                  Attending ({attendingResponses.length})
+                </h3>
+                <div class="panel-block-body px-5 py-4">
+                  <ul class="space-y-2">
+                    {#each attendingResponses as response}
+                      <li class="panel-list-item border flex items-start gap-3 p-3 rounded-xl">
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm font-semibold text-dark-900 mb-1">{response.name}</p>
+                          <p class="text-sm text-dark-700 whitespace-pre-wrap break-words">{response.value}</p>
+                        </div>
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              </div>
+            {/if}
+
+            {#if question.publicResponses.some(r => r.status === 'maybe')}
+              {@const maybeResponses = question.publicResponses.filter(r => r.status === 'maybe')}
+              <div class="panel-block tone-maybe overflow-hidden">
+                <h3 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5">
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-bold" style={`background-color: ${secondaryColors[600]}; color: white; box-shadow: 0 2px 8px ${withAlpha(secondaryColors[600], 0.25)};`}>?</span>
+                  Maybe ({maybeResponses.length})
+                </h3>
+                <div class="panel-block-body px-5 py-4">
+                  <ul class="space-y-2">
+                    {#each maybeResponses as response}
+                      <li class="panel-list-item border flex items-start gap-3 p-3 rounded-xl">
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm font-semibold text-dark-900 mb-1">{response.name}</p>
+                          <p class="text-sm text-dark-700 whitespace-pre-wrap break-words">{response.value}</p>
+                        </div>
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              </div>
+            {/if}
+
+            {#if question.publicResponses.some(r => r.status === 'not_attending')}
+              {@const notAttendingResponses = question.publicResponses.filter(r => r.status === 'not_attending')}
+              <div class="panel-block tone-not overflow-hidden">
+                <h3 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5">
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-bold" style={`background-color: ${withAlpha(primaryColors[600], 0.65)}; color: white; box-shadow: 0 2px 8px ${withAlpha(primaryColors[600], 0.18)};`}>✗</span>
+                  Not Attending ({notAttendingResponses.length})
+                </h3>
+                <div class="panel-block-body px-5 py-4">
+                  <ul class="space-y-2">
+                    {#each notAttendingResponses as response}
+                      <li class="panel-list-item border flex items-start gap-3 p-3 rounded-xl">
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm font-semibold text-dark-900 mb-1">{response.name}</p>
+                          <p class="text-sm text-dark-700 whitespace-pre-wrap break-words">{response.value}</p>
+                        </div>
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              </div>
+            {/if}
+          </div>
+        {/if}
       </section>
     {/each}
   {/if}
