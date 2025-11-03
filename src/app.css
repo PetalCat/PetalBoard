@@ -1199,7 +1199,10 @@ html.dark .top-nav.dark-header {
 /* Event header with dark header */
 html.dark .top-nav.event-header.dark-header {
   background: var(--event-header-bg-dark, rgba(34, 28, 64, 0.94)) !important;
-  border-bottom-color: var(--event-header-border-dark, rgba(139, 92, 246, 0.4)) !important;
+  border-bottom-color: var(
+    --event-header-border-dark,
+    rgba(139, 92, 246, 0.4)
+  ) !important;
   color: var(--event-header-text-dark, #ffffff) !important;
   box-shadow: 0 18px 36px rgba(8, 6, 28, 0.32) !important;
 }
@@ -1722,4 +1725,3 @@ html.dark .prose strong,
 html.dark .prose b {
   color: #ffffff;
 }
-
