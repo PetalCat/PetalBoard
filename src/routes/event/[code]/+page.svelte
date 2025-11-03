@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formatDate, formatShortDate } from '$lib/utils/format';
+  import { renderMarkdown } from '$lib/utils/markdown';
   import { enhance } from '$app/forms';
   import type { ActionData, PageData } from './$types';
   import { onMount, tick } from 'svelte';
@@ -1032,7 +1033,9 @@ const backgroundOverlayDark = event.backgroundImage
           {/if}
         </div>
         {#if event.description}
-          <p class="my-4 text-dark-800 leading-relaxed text-sm md:text-base">{event.description}</p>
+          <div class="my-4 text-dark-800 leading-relaxed text-sm md:text-base prose prose-sm md:prose-base max-w-none">
+            {@html renderMarkdown(event.description)}
+          </div>
         {/if}
         <div class="flex flex-wrap gap-2 mt-4">
           {#if event.rsvpLimit}
@@ -1259,7 +1262,9 @@ const backgroundOverlayDark = event.backgroundImage
           {/if}
         </div>
         {#if question.description}
-          <p class="m-0 mb-6 text-dark-700 text-sm leading-relaxed">{question.description}</p>
+          <div class="m-0 mb-6 text-dark-700 text-sm leading-relaxed prose prose-sm max-w-none">
+            {@html renderMarkdown(question.description)}
+          </div>
         {/if}
         
         <div class="flex flex-col gap-4">

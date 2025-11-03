@@ -41,6 +41,12 @@
     box-shadow: 0 0 0 3px rgba(124, 93, 250, 0.18);
   }
 
+  /* Preserve formatting in textareas */
+  textarea.input-field {
+    white-space: pre-wrap;
+    font-family: inherit;
+  }
+
   /* Mobile input adjustments */
   @media (max-width: 640px) {
     .input-field {
@@ -303,6 +309,92 @@
   .address-suggestion.selected,
   .address-suggestion:focus-visible {
     background-color: rgba(124, 93, 250, 0.08);
+  }
+
+  /* Markdown prose styling */
+  .prose {
+    @apply text-inherit;
+  }
+
+  .prose p {
+    @apply mb-4 last:mb-0;
+  }
+
+  .prose strong,
+  .prose b {
+    @apply font-semibold;
+  }
+
+  .prose em,
+  .prose i {
+    @apply italic;
+  }
+
+  .prose a {
+    @apply text-primary-700 underline hover:text-primary-800;
+  }
+
+  .prose ul,
+  .prose ol {
+    @apply ml-5 mb-4 last:mb-0;
+  }
+
+  .prose ul {
+    @apply list-disc;
+  }
+
+  .prose ol {
+    @apply list-decimal;
+  }
+
+  .prose li {
+    @apply mb-1;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    @apply font-bold mt-6 mb-3 first:mt-0;
+  }
+
+  .prose h1 {
+    @apply text-2xl;
+  }
+
+  .prose h2 {
+    @apply text-xl;
+  }
+
+  .prose h3 {
+    @apply text-lg;
+  }
+
+  .prose code {
+    @apply px-1.5 py-0.5 rounded text-sm;
+    background-color: rgba(124, 93, 250, 0.1);
+    color: #5533a5;
+  }
+
+  .prose pre {
+    @apply p-4 rounded-lg overflow-x-auto mb-4;
+    background-color: rgba(124, 93, 250, 0.05);
+  }
+
+  .prose pre code {
+    @apply p-0 bg-transparent;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 pl-4 italic my-4;
+    border-color: rgba(124, 93, 250, 0.3);
+  }
+
+  .prose hr {
+    @apply my-6 border-t;
+    border-color: rgba(124, 93, 250, 0.2);
   }
 }
 
@@ -1066,6 +1158,52 @@ html.dark .top-nav.event-header {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
+/* Top navigation bar - general dark mode */
+html.dark .top-nav {
+  background: rgba(20, 20, 36, 0.9) !important;
+  border-bottom-color: rgba(139, 92, 246, 0.26) !important;
+  color: #f6f5ff !important;
+  box-shadow: 0 16px 30px rgba(8, 8, 24, 0.3) !important;
+}
+
+html.dark .top-nav .brand-link {
+  color: #f6f5ff !important;
+}
+
+html.dark .top-nav .nav-link,
+html.dark .top-nav .nav-icon-button,
+html.dark .top-nav .nav-meta {
+  color: #f6f5ff !important;
+}
+
+html.dark .top-nav .nav-meta {
+  opacity: 0.8;
+}
+
+/* Event chip in top nav */
+html.dark .top-nav .event-chip {
+  background: rgba(24, 20, 44, 0.72) !important;
+  color: #ffffff !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+  box-shadow: 0 16px 40px rgba(6, 6, 18, 0.35) !important;
+}
+
+/* Dark header variant (when explicitly set) */
+html.dark .top-nav.dark-header {
+  background: rgba(20, 20, 36, 0.9) !important;
+  border-bottom-color: rgba(139, 92, 246, 0.26) !important;
+  color: #f6f5ff !important;
+  box-shadow: 0 16px 30px rgba(8, 8, 24, 0.3) !important;
+}
+
+/* Event header with dark header */
+html.dark .top-nav.event-header.dark-header {
+  background: var(--event-header-bg-dark, rgba(34, 28, 64, 0.94)) !important;
+  border-bottom-color: var(--event-header-border-dark, rgba(139, 92, 246, 0.4)) !important;
+  color: var(--event-header-text-dark, #ffffff) !important;
+  box-shadow: 0 18px 36px rgba(8, 6, 28, 0.32) !important;
+}
+
 /* Better contrast for event details sections */
 html.dark details {
   background-color: rgba(30, 30, 46, 0.6);
@@ -1552,3 +1690,36 @@ html.dark [class*="text-primary-700"] {
 html.dark .text-dark-500 {
   color: #8b8b99 !important;
 }
+
+/* Dark mode prose/markdown styles */
+html.dark .prose a {
+  color: #a78bfa;
+}
+
+html.dark .prose a:hover {
+  color: #c4b5fd;
+}
+
+html.dark .prose code {
+  background-color: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+}
+
+html.dark .prose pre {
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+html.dark .prose blockquote {
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #c9c9d4;
+}
+
+html.dark .prose hr {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+html.dark .prose strong,
+html.dark .prose b {
+  color: #ffffff;
+}
+

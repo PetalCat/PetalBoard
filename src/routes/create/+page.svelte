@@ -71,7 +71,8 @@
 
   <label class="form-label text-dark-800">
     <span>Description</span>
-    <textarea name="description" rows="4" class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 resize-y focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18">{values.description ?? ''}</textarea>
+    <textarea name="description" rows="4" class="rounded-xl border border-primary-700/25 px-4 py-3 font-inherit bg-white/90 resize-y focus:outline-none focus:border-primary-700 focus:ring-4 focus:ring-primary-700/18" style="white-space: pre-wrap;">{values.description ?? ''}</textarea>
+    <small class="text-sm text-gray-600">Supports Markdown formatting (bold, italic, lists, links, etc.)</small>
     {#if errors.description}
       <small class="text-red-600">{errors.description[0]}</small>
     {/if}

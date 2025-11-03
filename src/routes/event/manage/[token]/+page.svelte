@@ -297,7 +297,8 @@
 
       <label class="form-label">
         <span>Description</span>
-        <textarea class="input-field" name="description" rows="4">{event.description || ''}</textarea>
+        <textarea class="input-field" name="description" rows="4" style="white-space: pre-wrap;">{event.description || ''}</textarea>
+        <small class="text-sm text-gray-600">Supports Markdown formatting (bold, italic, lists, links, etc.)</small>
       </label>
 
       <!-- Event Customization -->
@@ -472,7 +473,8 @@
 
                 <label class="form-label">
                   <span>Description</span>
-                  <textarea class="input-field" name="description" rows="3">{question.description ?? ''}</textarea>
+                  <textarea class="input-field" name="description" rows="3" style="white-space: pre-wrap;">{question.description ?? ''}</textarea>
+                  <small class="text-sm text-gray-600">Supports Markdown</small>
                   {#if slotErrors[question.id]?.description}
                     <small class="text-red-600 text-sm">{slotErrors[question.id].description[0]}</small>
                   {/if}
@@ -875,7 +877,8 @@
 
         <label class="form-label">
           <span>Description</span>
-          <textarea class="input-field" name="description" rows="3"></textarea>
+          <textarea class="input-field" name="description" rows="3" style="white-space: pre-wrap;"></textarea>
+          <small class="text-sm text-gray-600">Supports Markdown</small>
         </label>
 
         <label class="flex items-center gap-3 cursor-pointer">
