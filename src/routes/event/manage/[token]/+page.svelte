@@ -200,6 +200,7 @@
     <h1 class="text-3xl font-bold text-dark-800 mb-2">{event.title}</h1>
     <p class="text-gray-600 text-sm">{formatDate(event.date, event.timezone)}</p>
   </div>
+</header>
 
 {#if isNewlyCreated}
   <div class="bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-2xl p-8 mb-6 shadow-2xl">
