@@ -1520,6 +1520,7 @@ const backgroundOverlayDark = event.backgroundImage
       aria-modal="true"
       aria-labelledby="edit-rsvp-title"
       tabindex="-1"
+      style="display: flex; flex-direction: column;"
       onclick={(event) => event.stopPropagation()}
       onkeydown={(event) => event.stopPropagation()}
     >
@@ -1532,7 +1533,7 @@ const backgroundOverlayDark = event.backgroundImage
         <div class="error-banner mb-4">{message}</div>
       {/if}
 
-      <form method="POST" action="?/updateRsvp" class="grid gap-5" use:enhance={() => {
+      <form method="POST" action="?/updateRsvp" class="grid gap-5" style="flex: 1; min-height: 0; overflow-y: auto;" use:enhance={() => {
         return async ({ result, update }) => {
           if (result.type === 'success' && result.data?.success) {
             // Update reactive state
