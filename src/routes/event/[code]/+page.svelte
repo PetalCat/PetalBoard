@@ -1530,10 +1530,10 @@ const backgroundOverlayDark = event.backgroundImage
       </div>
       
       {#if formType === 'updateRsvp' && message && !success}
-        <div class="error-banner mb-4">{message}</div>
+        <div class="error-banner">{message}</div>
       {/if}
 
-      <form method="POST" action="?/updateRsvp" class="grid gap-5" style="flex: 1; min-height: 0; overflow-y: auto;" use:enhance={() => {
+      <form method="POST" action="?/updateRsvp" style="flex: 1; min-height: 0; overflow-y: auto; display: grid; gap: 1.25rem; padding: 1.5rem;" use:enhance={() => {
         return async ({ result, update }) => {
           if (result.type === 'success' && result.data?.success) {
             // Update reactive state
