@@ -1,13 +1,17 @@
-import { json, error } from '@sveltejs/kit';
-import prisma from '$lib/server/prisma';
-import { removeTracksFromPlaylist, refreshAccessToken } from '$lib/server/spotify';
+import { json, error } from "@sveltejs/kit";
+import prisma from "$lib/server/prisma";
+import {
+  removeTracksFromPlaylist,
+  refreshAccessToken,
+} from "$lib/server/spotify";
 
 export const POST = async ({ request, locals }) => {
   try {
-    const { playlistId, trackUri, questionId, eventCode } = await request.json();
+    const { playlistId, trackUri, questionId, eventCode } =
+      await request.json();
 
     if (!playlistId || !trackUri || !questionId) {
-      throw error(400, 'Missing required parameters');
+      throw error(400, "Missing required parameters");
     }
 
     // Determine whose Spotify token to use
@@ -16,11 +20,11 @@ export const POST = async ({ request, locals }) => {
       // Guest RSVP - use event host's token
       const event = await prisma.event.findUnique({
         where: { publicCode: eventCode },
-        select: { userId: true }
+        select: { userId: true },
       });
 
       if (!event) {
-        throw error(404, 'Event not found');
+        throw error(404, "Event not found");
       }
 
       userId = event.userId;
@@ -28,7 +32,7 @@ export const POST = async ({ request, locals }) => {
       // Logged in user
       userId = locals.user.id;
     } else {
-      throw error(401, 'Authentication required');
+      throw error(401, "Authentication required");
     }
 
     // Get user's Spotify credentials
@@ -37,17 +41,20 @@ export const POST = async ({ request, locals }) => {
       select: {
         spotifyAccessToken: true,
         spotifyRefreshToken: true,
-        spotifyTokenExpiry: true
-      }
+        spotifyTokenExpiry: true,
+      },
     });
 
     if (!user?.spotifyAccessToken || !user?.spotifyRefreshToken) {
-      throw error(401, 'Spotify not connected');
+      throw error(401, "Spotify not connected");
     }
 
     // Check if token needs refresh
     let accessToken = user.spotifyAccessToken;
-    if (user.spotifyTokenExpiry && new Date(user.spotifyTokenExpiry) <= new Date()) {
+    if (
+      user.spotifyTokenExpiry &&
+      new Date(user.spotifyTokenExpiry) <= new Date()
+    ) {
       try {
         const tokenData = await refreshAccessToken(user.spotifyRefreshToken);
         accessToken = tokenData.access_token;
@@ -57,13 +64,16 @@ export const POST = async ({ request, locals }) => {
           where: { id: userId },
           data: {
             spotifyAccessToken: tokenData.access_token,
-            spotifyRefreshToken: tokenData.refresh_token || user.spotifyRefreshToken,
-            spotifyTokenExpiry: new Date(Date.now() + tokenData.expires_in * 1000)
-          }
+            spotifyRefreshToken:
+              tokenData.refresh_token || user.spotifyRefreshToken,
+            spotifyTokenExpiry: new Date(
+              Date.now() + tokenData.expires_in * 1000
+            ),
+          },
         });
       } catch (err) {
-        console.error('Token refresh failed:', err);
-        throw error(500, 'Failed to refresh Spotify token');
+        console.error("Token refresh failed:", err);
+        throw error(500, "Failed to refresh Spotify token");
       }
     }
 
@@ -72,10 +82,10 @@ export const POST = async ({ request, locals }) => {
 
     return json({ success: true });
   } catch (err: any) {
-    console.error('Remove track error:', err);
+    console.error("Remove track error:", err);
     if (err.status) {
       throw err;
     }
-    throw error(500, 'Failed to remove track');
+    throw error(500, "Failed to remove track");
   }
 };
