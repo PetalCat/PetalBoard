@@ -17,8 +17,7 @@
   let selectedTracks = $state<SpotifyTrack[]>([]);
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
   let showResults = $state(false);
-  let lastValue = $state<string>(value ?? '');
-  parseValue(lastValue);
+  let lastValue = $state<string | null>(null);
 
   const limitReached = $derived(limit !== null && limit !== undefined && selectedTracks.length >= limit);
 
@@ -43,8 +42,9 @@
   // Parse existing value if provided or updated from parent form
   $effect(() => {
     if (value !== lastValue) {
-      lastValue = value ?? '';
-      parseValue(lastValue);
+      const next = value ?? '';
+      parseValue(next);
+      lastValue = next;
     }
   });
 

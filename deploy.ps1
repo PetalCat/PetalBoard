@@ -1,5 +1,5 @@
 param(
-  [string]$Repository = "https://github.com/petalboard/petalboard.git",
+  [string]$Repository = "https://github.com/petalcat/petalboard.git",
   [string]$CheckoutPath,
   [int]$Port = 4173
 )
@@ -49,7 +49,11 @@ Write-Host "Building Docker image $imageName..." -ForegroundColor Cyan
 docker build -t $imageName .
 
 Write-Host "Stopping any existing container named $containerName..." -ForegroundColor Cyan
-docker rm -f $containerName 2>$null | Out-Null
+try {
+  docker rm -f $containerName | Out-Null
+} catch {
+  Write-Host "No existing container to remove." -ForegroundColor DarkGray
+}
 
 Write-Host "Starting container on http://localhost:$Port ..." -ForegroundColor Cyan
 docker run -d `

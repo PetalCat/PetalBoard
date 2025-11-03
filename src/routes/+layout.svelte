@@ -73,7 +73,19 @@
   </header>
 
   {#if mobileNavOpen}
-    <div class="mobile-nav-overlay" onclick={closeMobileNav}></div>
+    <div
+      class="mobile-nav-overlay"
+      role="button"
+      tabindex="0"
+      aria-label="Close navigation menu"
+      onclick={closeMobileNav}
+      onkeydown={(event) => {
+        if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          closeMobileNav();
+        }
+      }}
+    ></div>
   {/if}
 
   <aside class:hidden={!mobileNavOpen} class="mobile-nav-panel">

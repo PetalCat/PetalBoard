@@ -175,7 +175,7 @@
   }
 
   .mobile-nav-overlay {
-    @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-20;
+    @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-20 cursor-pointer border-none outline-none;
   }
 
   .mobile-nav-panel {
@@ -201,6 +201,30 @@
 
   .mobile-nav-meta span {
     @apply block mb-3 font-medium;
+  }
+
+  .address-clear-btn {
+    @apply absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-none text-primary-700 text-sm cursor-pointer flex items-center justify-center transition-transform duration-150 z-10 bg-[rgba(124,93,250,0.1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500;
+  }
+
+  .address-clear-btn:hover {
+    @apply scale-110;
+    background-color: rgba(124, 93, 250, 0.2);
+  }
+
+  .address-suggestion-list {
+    @apply absolute top-[calc(100%+0.25rem)] left-0 right-0 bg-white border rounded-xl max-h-[300px] overflow-y-auto z-50 shadow-[0_8px_24px_rgba(60,35,110,0.12)];
+  }
+
+  .address-suggestion {
+    @apply p-3 px-4 border-none bg-transparent text-left w-full border-b transition-colors last:border-b-0 cursor-pointer;
+    border-color: rgba(124, 93, 250, 0.1);
+  }
+
+  .address-suggestion:hover,
+  .address-suggestion.selected,
+  .address-suggestion:focus-visible {
+    background-color: rgba(124, 93, 250, 0.08);
   }
 }
 

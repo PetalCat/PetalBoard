@@ -207,14 +207,12 @@
     />
     
     {#if value && !isLoading}
-      <button 
-        type="button" 
-        class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-none text-primary-700 text-sm cursor-pointer flex items-center justify-center transition-all hover:scale-110 z-10" 
-        style="background-color: rgba(124, 93, 250, 0.1);"
-        onmouseover={(e) => e.currentTarget.style.backgroundColor = 'rgba(124, 93, 250, 0.2)'}
-        onmouseout={(e) => e.currentTarget.style.backgroundColor = 'rgba(124, 93, 250, 0.1)'}
-        onclick={clearLocation} 
+      <button
+        type="button"
+        class="address-clear-btn"
+        onclick={clearLocation}
         aria-label="Clear address"
+        onfocus={() => selectedIndex = -1}
       >
         ✕
       </button>
@@ -224,15 +222,17 @@
     {/if}
 
     {#if showSuggestions && suggestions.length > 0}
-      <div class="absolute top-[calc(100%+0.25rem)] left-0 right-0 bg-white border rounded-xl max-h-[300px] overflow-y-auto z-50 shadow-[0_8px_24px_rgba(60,35,110,0.12)]" style="border-color: rgba(124, 93, 250, 0.25);">
+      <div class="address-suggestion-list" style="border-color: rgba(124, 93, 250, 0.25);">
         {#each suggestions as suggestion, index}
           <button
             type="button"
-            class="p-3 px-4 cursor-pointer border-none bg-transparent text-left w-full border-b transition-colors last:border-b-0"
-            style="border-color: rgba(124, 93, 250, 0.1); {index === selectedIndex ? 'background-color: rgba(124, 93, 250, 0.05);' : ''}"
-            onmouseover={(e) => e.currentTarget.style.backgroundColor = 'rgba(124, 93, 250, 0.05)'}
-            onmouseout={(e) => { if (index !== selectedIndex) e.currentTarget.style.backgroundColor = 'transparent'; }}
+            class="address-suggestion"
+            class:selected={index === selectedIndex}
             onclick={() => selectSuggestion(suggestion)}
+            onfocus={() => selectedIndex = index}
+            onmouseenter={() => selectedIndex = index}
+            onblur={() => { if (selectedIndex === index) selectedIndex = -1; }}
+            onmouseleave={() => { if (selectedIndex === index) selectedIndex = -1; }}
           >
             <div class="font-medium mb-1 text-dark-900">{suggestion.placePrediction.text.text}</div>
             {#if suggestion.placePrediction.structuredFormat?.secondaryText?.text}

@@ -174,6 +174,13 @@
       });
   }
 
+  function handleOverlayKeydown(event: KeyboardEvent, action: () => void) {
+    if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      action();
+    }
+  }
+
   function parseSpotifyTracks(value: string | null | undefined): ParsedSpotifyTrack[] {
     if (!value) {
       return [];
@@ -701,10 +708,17 @@
 
 <!-- PIN Prompt Modal -->
 {#if editingRsvpId && !editingRsvp}
-  <div class="modal-backdrop" onclick={() => { editingRsvpId = ''; pinInput = ''; pinError = ''; }}>
-    <div class="modal" onclick={(e) => e.stopPropagation()}>
+  <div
+    class="modal-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Close PIN prompt"
+    onclick={() => { editingRsvpId = ''; pinInput = ''; pinError = ''; }}
+    onkeydown={(event) => handleOverlayKeydown(event, () => { editingRsvpId = ''; pinInput = ''; pinError = ''; })}
+  >
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pin-prompt-title" tabindex="-1" onclick|stopPropagation>
       <div class="modal-header">
-        <h3>Enter PIN</h3>
+        <h3 id="pin-prompt-title">Enter PIN</h3>
         <button class="close-btn" onclick={() => { editingRsvpId = ''; pinInput = ''; pinError = ''; }}>×</button>
       </div>
       <form method="POST" action="?/lookupRsvp" use:enhance={() => {
@@ -732,7 +746,6 @@
             placeholder="Enter PIN"
             maxlength="6"
             bind:value={pinInput}
-            autofocus
           />
         </label>
         <div class="modal-actions">
@@ -748,10 +761,17 @@
 
 <!-- Edit RSVP Modal -->
 {#if showEditModal && editingRsvp}
-  <div class="modal-backdrop" onclick={closeEditModal}>
-    <div class="modal large" onclick={(e) => e.stopPropagation()}>
+  <div
+    class="modal-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Close edit RSVP dialog"
+    onclick={closeEditModal}
+    onkeydown={(event) => handleOverlayKeydown(event, closeEditModal)}
+  >
+    <div class="modal large" role="dialog" aria-modal="true" aria-labelledby="edit-rsvp-title" tabindex="-1" onclick|stopPropagation>
       <div class="modal-header">
-        <h3>Edit Your RSVP</h3>
+        <h3 id="edit-rsvp-title">Edit Your RSVP</h3>
         <button class="close-btn" onclick={closeEditModal}>×</button>
       </div>
       
@@ -987,10 +1007,17 @@
 
 <!-- RSVP Form Modal -->
 {#if showRsvpModal && !rsvpAtLimit}
-  <div class="modal-backdrop" onclick={closeRsvpModal}>
-    <div class="modal large" onclick={(e) => e.stopPropagation()}>
+  <div
+    class="modal-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Close RSVP dialog"
+    onclick={closeRsvpModal}
+    onkeydown={(event) => handleOverlayKeydown(event, closeRsvpModal)}
+  >
+    <div class="modal large" role="dialog" aria-modal="true" aria-labelledby="create-rsvp-title" tabindex="-1" onclick|stopPropagation>
       <div class="modal-header">
-        <h3>RSVP to {event.title}</h3>
+        <h3 id="create-rsvp-title">RSVP to {event.title}</h3>
         <button class="close-btn" onclick={closeRsvpModal}>×</button>
       </div>
       

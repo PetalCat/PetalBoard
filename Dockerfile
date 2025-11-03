@@ -20,6 +20,7 @@ COPY static ./static
 COPY svelte.config.js tsconfig.json vite.config.ts .
 
 RUN corepack enable pnpm \
+  && pnpm exec svelte-kit sync \
   && pnpm run build
 
 FROM node:20-alpine AS runner
