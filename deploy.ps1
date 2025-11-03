@@ -1,7 +1,7 @@
 param(
   [string]$Repository = "https://github.com/petalboard/petalboard.git",
   [string]$CheckoutPath,
-  [int]$Port = 4923
+  [int]$Port = 4173
 )
 
 $ErrorActionPreference = "Stop"
