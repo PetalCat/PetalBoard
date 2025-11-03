@@ -157,29 +157,28 @@
     <div class="space-y-3">
       {#each selectedTracks as track (track.id)}
         <div class="bg-gradient-to-br from-primary-50 to-accent-50/30 rounded-xl p-4 border border-primary-700/20">
-          <div class="flex gap-4 items-center">
+          <div class="flex gap-4 items-start">
             {#if track.album.images[0]}
               <img
                 src={track.album.images[2]?.url || track.album.images[0].url}
                 alt={track.album.name}
-                class="w-16 h-16 rounded-lg shadow-md shrink-0"
+                class="w-16 h-16 rounded-lg shadow-md shrink-0 object-cover"
                 loading="lazy"
                 decoding="async"
                 width="64"
                 height="64"
               />
             {/if}
-            <div class="flex-1 min-w-0">
-              <h4 class="font-semibold text-dark-900 truncate">{track.name}</h4>
-              <p class="text-sm text-dark-700/70 truncate">
+            <div class="flex-1 min-w-0 py-1">
+              <h4 class="text-sm font-semibold text-dark-900 truncate">{track.name}</h4>
+              <p class="text-xs text-dark-700/70 truncate">
                 {track.artists.map((artist) => artist.name).join(', ')}
               </p>
-              <p class="text-xs text-dark-700/50 truncate">{track.album.name}</p>
             </div>
             <button
               type="button"
               onclick={() => removeTrack(track.id)}
-              class="px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-red-50 text-red-600 hover:bg-red-100"
+              class="px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-red-50 text-red-600 hover:bg-red-100 shrink-0"
             >
               Remove
             </button>
