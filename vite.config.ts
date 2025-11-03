@@ -9,6 +9,6 @@ export default defineConfig({
     port: 5173,
   },
   ssr: {
-    noExternal: ['@prisma/client']
-  }
+    noExternal: ["@prisma/client"],
+  },
 });
