@@ -55,7 +55,7 @@ export const eventSchema = z.object({
       message: "Must be between 1 and 10000",
     }),
   location: optionalText(z.string().max(120)),
-  description: optionalText(z.string().max(600)),
+  description: optionalText(z.string().max(5000)),
   primaryColor: optionalText(
     z.string().regex(/^[a-z]+$/, "Invalid color name")
   ),
@@ -75,7 +75,7 @@ export const questionSchema = z.object({
     "spotify_playlist",
   ]),
   label: z.string().trim().min(2, "Question text is required"),
-  description: optionalText(z.string().max(300)),
+  description: optionalText(z.string().max(2000)),
   required: z
     .string()
     .optional()
