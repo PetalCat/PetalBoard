@@ -39,6 +39,8 @@ COPY --from=build /app/build ./build
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY prisma ./prisma
 
+RUN pnpm exec prisma generate
+
 EXPOSE 4173
 
 CMD ["sh", "-c", "pnpm exec prisma migrate deploy && node build"]
