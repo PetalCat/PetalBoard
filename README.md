@@ -1,7 +1,6 @@
 # PetalBoard
 
-PetalBoard is a modern, mobile-friendly alternative to SignupGenius focused on coordinating house
-and potluck events. Hosts can create an event in minutes, share a public link, and manage signups
+PetalBoard is a modern, mobile-friendly alternative to other platforms focused on coordinating events. Hosts can create an event in minutes, share a public link, and manage signups
 without forcing guests to create accounts.
 
 ## Features
@@ -25,18 +24,22 @@ without forcing guests to create accounts.
 ## Getting started
 
 1. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 2. **Configure the database**
    Copy the environment example and adjust if necessary.
+
    ```bash
    cp .env.example .env
    ```
+
    By default the project stores data in `prisma/dev.db` (ignored by git).
 
 3. **Generate the Prisma client and run migrations**
+
    ```bash
    pnpm exec prisma migrate dev
    ```

@@ -716,7 +716,14 @@
     onclick={() => { editingRsvpId = ''; pinInput = ''; pinError = ''; }}
     onkeydown={(event) => handleOverlayKeydown(event, () => { editingRsvpId = ''; pinInput = ''; pinError = ''; })}
   >
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pin-prompt-title" tabindex="-1" onclick|stopPropagation>
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pin-prompt-title"
+      tabindex="-1"
+      onclick={(event) => event.stopPropagation()}
+    >
       <div class="modal-header">
         <h3 id="pin-prompt-title">Enter PIN</h3>
         <button class="close-btn" onclick={() => { editingRsvpId = ''; pinInput = ''; pinError = ''; }}>×</button>
@@ -769,7 +776,14 @@
     onclick={closeEditModal}
     onkeydown={(event) => handleOverlayKeydown(event, closeEditModal)}
   >
-    <div class="modal large" role="dialog" aria-modal="true" aria-labelledby="edit-rsvp-title" tabindex="-1" onclick|stopPropagation>
+    <div
+      class="modal large"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-rsvp-title"
+      tabindex="-1"
+      onclick={(event) => event.stopPropagation()}
+    >
       <div class="modal-header">
         <h3 id="edit-rsvp-title">Edit Your RSVP</h3>
         <button class="close-btn" onclick={closeEditModal}>×</button>
@@ -1015,7 +1029,14 @@
     onclick={closeRsvpModal}
     onkeydown={(event) => handleOverlayKeydown(event, closeRsvpModal)}
   >
-    <div class="modal large" role="dialog" aria-modal="true" aria-labelledby="create-rsvp-title" tabindex="-1" onclick|stopPropagation>
+    <div
+      class="modal large"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-rsvp-title"
+      tabindex="-1"
+      onclick={(event) => event.stopPropagation()}
+    >
       <div class="modal-header">
         <h3 id="create-rsvp-title">RSVP to {event.title}</h3>
         <button class="close-btn" onclick={closeRsvpModal}>×</button>

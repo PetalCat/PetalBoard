@@ -19,7 +19,7 @@
 
 <h1 class="mb-2">Create an event</h1>
 <p class="text-dark-900/75 max-w-[60ch] mb-8">
-  Set up your potluck or house event, then share the public link with your guests. You can always
+  Set up your event, then share the public link with your guests. You can always
   come back to update slots or details from the manage link.
 </p>
 

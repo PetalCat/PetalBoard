@@ -2,7 +2,7 @@
   <div>
     <h1 class="text-[clamp(2.6rem,5vw,3.6rem)] leading-tight mb-6 font-bold bg-gradient-to-br from-dark-800 to-primary-800 bg-clip-text text-transparent">Signup lists your guests will actually love using.</h1>
     <p class="text-lg max-w-[38ch] text-dark-900/80 leading-relaxed">
-      PetalBoard helps hosts collect potluck items, organize house events, and keep guests in the
+      PetalBoard helps hosts organize events, and keep guests in the
       loop without requiring accounts.
     </p>
     <div class="flex gap-4 mt-8 flex-wrap">

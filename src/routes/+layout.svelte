@@ -20,7 +20,7 @@
   <title>PetalBoard</title>
   <meta
     name="description"
-    content="Create polished potluck and house event signups without forcing guests to make accounts."
+    content="Create polished event signups without forcing guests to make accounts."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
@@ -110,6 +110,6 @@
   <main class="flex-1 w-full max-w-[1100px] mx-auto px-4 pt-6 pb-20 lg:px-12 lg:py-12">{@render children()}</main>
 
   <footer class="text-center py-8 px-4 text-[rgba(46,24,83,0.7)] text-sm">
-    <p>Built for effortless potlucks and house events.</p>
+    <p>Made with love - Parker</p>
   </footer>
 </div>
