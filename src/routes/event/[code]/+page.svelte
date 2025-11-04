@@ -199,13 +199,13 @@ const backgroundOverlayDark = event.backgroundImage
     '--event-summary-attending-text': primaryColors[800],
     '--event-summary-attending-text-dark': '#ffffff',
     '--event-summary-attending-border': withAlpha(primaryColors[600], 0.18),
-    '--event-summary-attending-border-dark': `rgba(${hexToRgb(primaryColors[500]).r}, ${hexToRgb(primaryColors[500]).g}, ${hexToRgb(primaryColors[500]).b}, 0.3)`,
+    '--event-summary-attending-border-dark': `rgba(${hexToRgb(primaryColors[600]).r}, ${hexToRgb(primaryColors[600]).g}, ${hexToRgb(primaryColors[600]).b}, 0.3)`,
     '--event-summary-maybe-bg': mixColors(secondaryColors[100], '#ffffff', 0.53, 0.9),
     '--event-summary-maybe-bg-dark': `rgba(${hexToRgb(secondaryColors[600]).r}, ${hexToRgb(secondaryColors[600]).g}, ${hexToRgb(secondaryColors[600]).b}, 0.25)`,
     '--event-summary-maybe-text': secondaryColors[800],
     '--event-summary-maybe-text-dark': '#ffffff',
     '--event-summary-maybe-border': withAlpha(secondaryColors[600], 0.2),
-    '--event-summary-maybe-border-dark': `rgba(${hexToRgb(secondaryColors[500]).r}, ${hexToRgb(secondaryColors[500]).g}, ${hexToRgb(secondaryColors[500]).b}, 0.3)`,
+    '--event-summary-maybe-border-dark': `rgba(${hexToRgb(secondaryColors[600]).r}, ${hexToRgb(secondaryColors[600]).g}, ${hexToRgb(secondaryColors[600]).b}, 0.3)`,
     '--event-summary-not-bg': mixColors(primaryColors[100], '#ffffff', 0.62, 0.9),
     '--event-summary-not-bg-dark': 'rgba(40, 40, 48, 0.6)',
     '--event-summary-not-text': primaryColors[700],
@@ -258,7 +258,7 @@ const backgroundOverlayDark = event.backgroundImage
   let rsvps = $state(data.rsvps);
   let rsvpCount = $state(data.event.rsvpCount);
   let questionResponseCounts = $state<Record<string, number>>(
-    Object.fromEntries(event.questions.map(q => [q.id, q.responseCount]))
+    Object.fromEntries(event.questions.map((q: any) => [q.id, q.responseCount]))
   );
 
   const errors = $derived<Record<string, string[]>>((form?.errors ?? {}) as Record<string, string[]>);
@@ -268,7 +268,7 @@ const backgroundOverlayDark = event.backgroundImage
   const formType = $derived(form?.type ?? null);
 
   // Initialize responses with required question IDs
-  const requiredQuestionIds = event.questions.filter((q) => q.required).map((q) => q.id);
+  const requiredQuestionIds = event.questions.filter((q: any) => q.required).map((q: any) => q.id);
   
   let responses = $state<Record<string, string>>({});
   let showRsvpModal = $state(false);
@@ -279,8 +279,8 @@ const backgroundOverlayDark = event.backgroundImage
   let editingRsvpId = $state<string>('');
   let pinInput = $state<string>('');
   let pinError = $state<string>('');
-  let editingStatus = $state<string>('attending');
-  let newRsvpStatus = $state<string>('attending');
+  let editingStatus = $state<'attending' | 'maybe' | 'not_attending'>('attending');
+  let newRsvpStatus = $state<'attending' | 'maybe' | 'not_attending'>('attending');
   let showCancelConfirm = $state(false);
   
   // Collapsible sections state
@@ -459,10 +459,10 @@ const backgroundOverlayDark = event.backgroundImage
           const name = typeof track.name === 'string' ? track.name : 'Unknown track';
           const rawArtists = Array.isArray(track.artists)
             ? track.artists
-                .map((artist) =>
+                .map((artist: any) =>
                   artist && typeof artist === 'object' && typeof artist.name === 'string' ? artist.name : null
                 )
-                .filter((artist): artist is string => Boolean(artist))
+                .filter((artist: any): artist is string => Boolean(artist))
             : [];
           const album =
             track.album && typeof track.album === 'object' && typeof track.album.name === 'string'
@@ -647,20 +647,17 @@ const backgroundOverlayDark = event.backgroundImage
   .event-card p,
   .event-card span,
   .event-card small,
-  .event-section p,
   .event-section span,
   .panel-block-body p,
   .panel-block-body span,
   .panel-list-item p,
-  .panel-list-item span,
-  .panel-list-item small {
+  .panel-list-item span {
     color: var(--event-text-secondary, #3c2f68);
   }
 
   .event-card small,
   .event-card .text-dark-600,
-  .event-card .text-dark-500,
-  .panel-list-item small {
+  .event-card .text-dark-500 {
     color: var(--event-text-muted, #655b82);
   }
 
@@ -697,7 +694,6 @@ const backgroundOverlayDark = event.backgroundImage
   :global(.dark) .event-card p,
   :global(.dark) .event-card span,
   :global(.dark) .event-card a,
-  :global(.dark) .event-section p,
   :global(.dark) .panel-block-body p,
   :global(.dark) .panel-block-body span,
   :global(.dark) .panel-list-item p,
@@ -706,7 +702,6 @@ const backgroundOverlayDark = event.backgroundImage
   }
 
   :global(.dark) .event-card small,
-  :global(.dark) .panel-list-item small,
   :global(.dark) .panel-list-item .text-dark-600,
   :global(.dark) .panel-list-item .text-dark-500,
   :global(.dark) .event-card .text-dark-600,
@@ -737,18 +732,12 @@ const backgroundOverlayDark = event.backgroundImage
   }
 
   :global(.dark) .event-page-wrapper .border,
-  :global(.dark) .event-page-wrapper .border-b,
-  :global(.dark) .event-page-wrapper .border-t,
-  :global(.dark) .event-page-wrapper .border-l,
-  :global(.dark) .event-page-wrapper .border-r {
+  :global(.dark) .event-page-wrapper .border-b {
     border-color: var(--event-divider-dark, rgba(124, 93, 250, 0.28)) !important;
   }
 
   :global(.dark) .event-card .border,
-  :global(.dark) .event-card .border-b,
-  :global(.dark) .event-card .border-t,
-  :global(.dark) .event-card .border-l,
-  :global(.dark) .event-card .border-r {
+  :global(.dark) .event-card .border-b {
     border-color: var(--event-divider-dark, rgba(124, 93, 250, 0.24)) !important;
   }
 
@@ -930,47 +919,6 @@ const backgroundOverlayDark = event.backgroundImage
     border-color: var(--event-surface-border-dark) !important;
   }
 
-  /* Event-themed buttons in dark mode */
-  :global(.dark) .event-page-wrapper .btn-primary {
-    background: linear-gradient(135deg, var(--event-primary-600), var(--event-secondary-600)) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  }
-
-  :global(.dark) .event-page-wrapper .btn-primary:hover {
-    background: linear-gradient(135deg, var(--event-primary-700), var(--event-secondary-700)) !important;
-    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6) !important;
-    transform: translateY(-1px) !important;
-  }
-
-  :global(.dark) .event-page-wrapper .btn-secondary {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: var(--event-text-primary-dark) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  }
-
-  :global(.dark) .event-page-wrapper .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
-  }
-
-  /* Also target buttons directly */
-  :global(.dark) .event-page-wrapper button.btn-primary,
-  :global(.dark) .event-page-wrapper a.btn-primary {
-    background: linear-gradient(135deg, var(--event-primary-600), var(--event-secondary-600)) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  }
-
-  :global(.dark) .event-page-wrapper button.btn-primary:hover,
-  :global(.dark) .event-page-wrapper a.btn-primary:hover {
-    background: linear-gradient(135deg, var(--event-primary-700), var(--event-secondary-700)) !important;
-    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6) !important;
-    transform: translateY(-1px) !important;
-  }
-
   /* Mobile-specific improvements */
   @media (max-width: 640px) {
     .event-page-wrapper {
@@ -1122,9 +1070,9 @@ const backgroundOverlayDark = event.backgroundImage
 
   <!-- WHO'S COMING - Public View -->
   {#if rsvps && rsvps.length > 0}
-    {@const attendingList = rsvps.filter(r => r.status === 'attending')}
-    {@const maybeList = rsvps.filter(r => r.status === 'maybe')}
-    {@const notAttendingList = rsvps.filter(r => r.status === 'not_attending')}
+    {@const attendingList = rsvps.filter((r: any) => r.status === 'attending')}
+    {@const maybeList = rsvps.filter((r: any) => r.status === 'maybe')}
+    {@const notAttendingList = rsvps.filter((r: any) => r.status === 'not_attending')}
     
     <section class="card event-card mb-8">
       <h2 class="text-xl md:text-2xl font-bold text-dark-900 mb-6">Who's Coming ({attendingList.length} attending, {maybeList.length} maybe)</h2>
@@ -1136,7 +1084,7 @@ const backgroundOverlayDark = event.backgroundImage
           <details
             class="panel tone-attending overflow-hidden"
             open={showAttending}
-            ontoggle={(e) => (showAttending = e.target.open)}
+            ontoggle={(e) => (showAttending = (e.target as HTMLDetailsElement)?.open ?? false)}
           >
             <summary class="flex justify-between items-center px-4 md:px-6 py-3.5 md:py-4 cursor-pointer select-none font-semibold text-base md:text-lg transition-all list-none hover:opacity-90">
               <span class="flex items-center gap-2">
@@ -1178,7 +1126,7 @@ const backgroundOverlayDark = event.backgroundImage
           <details
             class="panel tone-maybe overflow-hidden"
             open={showMaybe}
-            ontoggle={(e) => (showMaybe = e.target.open)}
+            ontoggle={(e) => (showMaybe = (e.target as HTMLDetailsElement)?.open ?? false)}
           >
             <summary class="flex justify-between items-center px-4 md:px-6 py-3.5 md:py-4 cursor-pointer select-none font-semibold text-base md:text-lg transition-all list-none hover:opacity-90">
               <span class="flex items-center gap-2">
@@ -1220,7 +1168,7 @@ const backgroundOverlayDark = event.backgroundImage
           <details
             class="panel tone-not overflow-hidden"
             open={showNotAttending}
-            ontoggle={(e) => (showNotAttending = e.target.open)}
+            ontoggle={(e) => (showNotAttending = (e.target as HTMLDetailsElement)?.open ?? false)}
           >
             <summary class="flex justify-between items-center px-4 md:px-6 py-3.5 md:py-4 cursor-pointer select-none font-semibold text-base md:text-lg transition-all list-none hover:opacity-80">
               <span class="flex items-center gap-2">
@@ -1261,8 +1209,8 @@ const backgroundOverlayDark = event.backgroundImage
   {/if}
 
   <!-- Public Question Responses (All Types - In Creation Order) -->
-  {#if event.questions.some(q => q.isPublic && q.publicResponses && q.publicResponses.length > 0)}
-    {@const publicQuestions = event.questions.filter(q => q.isPublic && q.publicResponses && q.publicResponses.length > 0)}
+  {#if event.questions.some((q: any) => q.isPublic && q.publicResponses && q.publicResponses.length > 0)}
+    {@const publicQuestions = event.questions.filter((q: any) => q.isPublic && q.publicResponses && q.publicResponses.length > 0)}
     {#each publicQuestions as question}
       <section class="card event-card mb-8">
         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-3 md:gap-4 pb-4 border-b" style="border-color: {primaryColors[600]}20;">
@@ -1286,7 +1234,7 @@ const backgroundOverlayDark = event.backgroundImage
         {#if question.type === 'spotify_playlist'}
           <!-- Spotify Playlist Question -->
           <div class="flex flex-col gap-4">
-            {#if question.publicResponses.some(r => r.status === 'attending')}
+            {#if question.publicResponses.some((r: any) => r.status === 'attending')}
               {@const attendingTrackEntries = buildPlaylistEntries(question.publicResponses ?? [], 'attending')}
             <div class="panel-block tone-attending overflow-hidden">
               <h3
@@ -1346,7 +1294,7 @@ const backgroundOverlayDark = event.backgroundImage
             </div>
           {/if}
           
-          {#if question.publicResponses.some(r => r.status === 'maybe')}
+          {#if question.publicResponses.some((r: any) => r.status === 'maybe')}
             {@const maybeTrackEntries = buildPlaylistEntries(question.publicResponses ?? [], 'maybe')}
             <div class="panel-block tone-maybe overflow-hidden">
               <h3 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5">
@@ -1402,7 +1350,7 @@ const backgroundOverlayDark = event.backgroundImage
             </div>
           {/if}
           
-          {#if question.publicResponses.some(r => r.status === 'not_attending')}
+          {#if question.publicResponses.some((r: any) => r.status === 'not_attending')}
             {@const notTrackEntries = buildPlaylistEntries(question.publicResponses ?? [], 'not_attending')}
             <div class="panel-block tone-not overflow-hidden">
               <h3 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5">
@@ -1461,8 +1409,8 @@ const backgroundOverlayDark = event.backgroundImage
         {:else}
           <!-- Non-Spotify Question (Text/Radio/Checkbox) -->
           <div class="flex flex-col gap-4">
-            {#if question.publicResponses.some(r => r.status === 'attending')}
-              {@const attendingResponses = question.publicResponses.filter(r => r.status === 'attending')}
+            {#if question.publicResponses.some((r: any) => r.status === 'attending')}
+              {@const attendingResponses = question.publicResponses.filter((r: any) => r.status === 'attending')}
               <div class="panel-block tone-attending overflow-hidden">
                 <h3 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5">
                   <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-bold" style={`background-color: ${primaryColors[600]}; color: white; box-shadow: 0 2px 8px ${withAlpha(primaryColors[600], 0.28)};`}>✓</span>
@@ -1483,8 +1431,8 @@ const backgroundOverlayDark = event.backgroundImage
               </div>
             {/if}
 
-            {#if question.publicResponses.some(r => r.status === 'maybe')}
-              {@const maybeResponses = question.publicResponses.filter(r => r.status === 'maybe')}
+            {#if question.publicResponses.some((r: any) => r.status === 'maybe')}
+              {@const maybeResponses = question.publicResponses.filter((r: any) => r.status === 'maybe')}
               <div class="panel-block tone-maybe overflow-hidden">
                 <h3 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5">
                   <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-bold" style={`background-color: ${secondaryColors[600]}; color: white; box-shadow: 0 2px 8px ${withAlpha(secondaryColors[600], 0.25)};`}>?</span>
@@ -1505,8 +1453,8 @@ const backgroundOverlayDark = event.backgroundImage
               </div>
             {/if}
 
-            {#if question.publicResponses.some(r => r.status === 'not_attending')}
-              {@const notAttendingResponses = question.publicResponses.filter(r => r.status === 'not_attending')}
+            {#if question.publicResponses.some((r: any) => r.status === 'not_attending')}
+              {@const notAttendingResponses = question.publicResponses.filter((r: any) => r.status === 'not_attending')}
               <div class="panel-block tone-not overflow-hidden">
                 <h3 class="panel-block-header m-0 px-5 py-3.5 text-sm font-semibold flex items-center gap-2.5">
                   <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-bold" style={`background-color: ${withAlpha(primaryColors[600], 0.65)}; color: white; box-shadow: 0 2px 8px ${withAlpha(primaryColors[600], 0.18)};`}>✗</span>
@@ -1550,6 +1498,7 @@ const backgroundOverlayDark = event.backgroundImage
       aria-labelledby="pin-prompt-title"
       tabindex="-1"
       onclick={(event) => event.stopPropagation()}
+      onkeydown={(event) => event.key === 'Escape' && event.stopPropagation()}
     >
       <div class="modal-header">
         <h3 id="pin-prompt-title">Enter PIN</h3>
@@ -1714,7 +1663,7 @@ const backgroundOverlayDark = event.backgroundImage
                       name="response_{question.id}"
                       type="text"
                       value={responses[question.id] ?? ''}
-                      required={question.required && editingStatus !== 'not_attending'}
+                      required={question.required}
                       onchange={(e) => responses[question.id] = e.currentTarget.value}
                     />
                   </label>
@@ -1731,7 +1680,7 @@ const backgroundOverlayDark = event.backgroundImage
                           name="response_{question.id}"
                           value={option}
                           checked={responses[question.id] === option}
-                          required={question.required && editingStatus !== 'not_attending'}
+                          required={question.required}
                           onchange={(e) => responses[question.id] = e.currentTarget.value}
                         />
                         <span>{option}</span>
@@ -1775,7 +1724,7 @@ const backgroundOverlayDark = event.backgroundImage
                       name="response_{question.id}"
                       type="text"
                       value={responses[question.id] ?? ''}
-                      required={question.required && editingStatus !== 'not_attending'}
+                      required={question.required}
                       placeholder="What are you bringing?"
                       onchange={(e) => responses[question.id] = e.currentTarget.value}
                     />
@@ -1798,7 +1747,7 @@ const backgroundOverlayDark = event.backgroundImage
                     {/if}
                     <SpotifySongSelector
                       name="response_{question.id}"
-                      required={question.required && editingStatus !== 'not_attending'}
+                      required={question.required}
                       value={responses[question.id] ?? ''}
                       eventCode={event.publicCode}
                       limit={question.songsPerUser ?? null}
