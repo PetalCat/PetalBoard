@@ -7,6 +7,40 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
+    <style>
+      /* Critical CSS - inlined for faster initial render */
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(to bottom, #fcfbff, #f5f3ff);
+        color: #1f1235;
+        min-height: 100vh;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      body.no-scroll {
+        overflow: hidden;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      /* Prevent flash of unstyled content */
+      .layout-shell {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+    </style>
     <script>
       // Apply dark mode immediately to prevent flash
       try {

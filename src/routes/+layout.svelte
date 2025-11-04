@@ -76,15 +76,24 @@
   <!-- Critical resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="dns-prefetch" href="https://maps.googleapis.com" />
-  <link rel="dns-prefetch" href="https://maps.gstatic.com" />
+  <!-- Upgrade to preconnect for Google Maps to reduce connection latency -->
+  <link rel="preconnect" href="https://maps.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://maps.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://i.scdn.co" />
   
-  <!-- Load fonts with optimal display strategy -->
+  <!-- Load fonts with optimal display strategy and preload key font files -->
   <link
+    rel="preload"
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap"
-    rel="stylesheet"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
   />
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap"
+      rel="stylesheet"
+    />
+  </noscript>
 </svelte:head>
 
 <div class="layout-shell flex flex-col min-h-screen w-full max-w-full overflow-x-hidden box-border">
