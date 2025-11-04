@@ -73,7 +73,7 @@
     name="description"
     content="Create polished event signups without forcing guests to make accounts."
   />
-  <!-- Critical resource hints -->
+    <!-- Critical resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- Upgrade to preconnect for Google Maps to reduce connection latency -->
@@ -81,13 +81,8 @@
   <link rel="preconnect" href="https://maps.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://i.scdn.co" />
   
-  <!-- Load fonts with optimal display strategy and preload key font files -->
-  <link
-    rel="preload"
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap"
-    as="style"
-    onload="this.onload=null;this.rel='stylesheet'"
-  />
+  <!-- Load fonts with optimal display strategy -->
+  {@html '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap" media="print" onload="this.media=\'all\'" />'}
   <noscript>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap"
