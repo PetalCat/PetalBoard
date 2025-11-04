@@ -59,6 +59,14 @@
   onMount(() => {
     // Ensure dark mode class is applied on mount
     applyDarkMode();
+    
+    // Handle async font loading
+    const fontLink = document.querySelector('link[media="print"][href*="fonts.googleapis.com"]');
+    if (fontLink) {
+      fontLink.addEventListener('load', () => {
+        (fontLink as HTMLLinkElement).media = 'all';
+      });
+    }
   });
 
   $effect(() => {
@@ -75,14 +83,18 @@
   />
     <!-- Critical resource hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
   <!-- Upgrade to preconnect for Google Maps to reduce connection latency -->
-  <link rel="preconnect" href="https://maps.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://maps.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://maps.googleapis.com" />
+  <link rel="preconnect" href="https://maps.gstatic.com" crossorigin="anonymous" />
   <link rel="dns-prefetch" href="https://i.scdn.co" />
   
   <!-- Load fonts with optimal display strategy -->
-  {@html '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap" media="print" onload="this.media=\'all\'" />'}
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap"
+    media="print"
+  />
   <noscript>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@600&display=swap"
@@ -299,21 +311,6 @@
 
   .nav-meta {
     opacity: 0.75;
-  }
-
-  .event-chip {
-    background: var(--event-topbar-chip-bg, rgba(255, 255, 255, 0.4));
-    color: var(--event-topbar-chip-text, currentColor);
-    border: 1px solid var(--event-topbar-chip-border, rgba(124, 93, 250, 0.28));
-    border-radius: 9999px;
-    padding: 0.35rem 0.9rem;
-    box-shadow: 0 12px 32px rgba(60, 30, 110, 0.15);
-  }
-
-  .top-nav.dark-header .event-chip {
-    background: var(--event-topbar-chip-bg-dark, rgba(24, 20, 44, 0.72));
-    color: var(--event-topbar-chip-text-dark, #ffffff);
-    box-shadow: 0 16px 40px rgba(6, 6, 18, 0.35);
   }
 
   .top-nav.event-header .mobile-nav-toggle {

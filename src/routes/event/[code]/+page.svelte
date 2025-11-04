@@ -343,7 +343,8 @@ const backgroundOverlayDark = event.backgroundImage
             const isVisible = entries.some((entry) => entry.isIntersecting);
             if (isVisible) {
               observer?.disconnect();
-              requestMapLoad();
+              // Performance: Delay map loading slightly to prioritize LCP
+              requestIdleCallback(() => requestMapLoad(), { timeout: 1000 });
             }
           },
           { rootMargin: '200px 0px' }
@@ -621,7 +622,12 @@ const backgroundOverlayDark = event.backgroundImage
     background: var(--event-card-surface, rgba(255, 255, 255, 0.95));
     box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08);
     border: 1px solid var(--event-surface-border, rgba(124, 93, 250, 0.1));
+    border-radius: 24px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Performance: Contain layout and paint to prevent style recalculation propagation */
+    contain: layout paint;
+    /* Performance: Hint browser about potential transforms */
+    will-change: transform;
   }
 
   .event-section {
@@ -759,9 +765,17 @@ const backgroundOverlayDark = event.backgroundImage
     background: var(--event-panel-surface);
     border: 1px solid var(--event-surface-border);
     border-radius: 20px;
+    /* Performance: Contain layout to isolate reflows */
+    contain: layout style;
     box-shadow: 0 2px 12px -4px var(--event-panel-shadow);
     overflow: hidden;
     transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  /* Performance: Skip rendering for closed details */
+  details.panel:not([open]) {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 80px;
   }
 
   :global(.dark) details.panel {
@@ -818,6 +832,8 @@ const backgroundOverlayDark = event.backgroundImage
     box-shadow: 0 2px 12px -4px var(--event-panel-shadow);
     overflow: hidden;
     transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    /* Performance: Contain layout for list items */
+    contain: layout style;
   }
 
   :global(.dark) .panel-block {
